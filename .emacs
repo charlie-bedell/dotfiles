@@ -7,7 +7,7 @@
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
  '(package-selected-packages
-	 '(helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html typescript-mode subatomic-theme tangotango-theme flymd flycheck-kotlin kotlin-mode markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient flymake ace-window python swiper))
+	 '(tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html typescript-mode subatomic-theme tangotango-theme flymd flycheck-kotlin kotlin-mode markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient flymake ace-window python swiper))
  '(vc-annotate-very-old-color "#DC8CC3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -18,7 +18,7 @@
  '(helm-ff-file ((t (:foreground "lightgrey"))))
  '(helm-selection ((t (:background "gray27" :distant-foreground "white"))))
  '(highlight ((t (:background "#3C4446" :foreground "lightgrey"))))
- '(hl-line ((t (background "#3C4446"))))
+ '(hl-line ((t (:extend t :background "#3C4446"))))
  '(markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
  '(markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
  '(markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))
@@ -35,7 +35,6 @@
 (package-initialize)
 ;; basic custom settings
 (global-set-key (kbd "C-s") 'swiper)
-;; helm
 (helm-mode 1)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-x") 'helm-M-x)
@@ -44,7 +43,6 @@
 (setq scroll-step 1)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (global-hl-line-mode +1)
-;; smartparens settings
 (smartparens-global-mode +1)
 (show-smartparens-global-mode +1)
 ;; adding "'" and "`" pairs are already including, adding then removing them locally
@@ -66,8 +64,6 @@
 ;; multiple cursors keybidings
 (global-set-key (kbd "C-c C-n") 'mc/mark-next-lines)
 ;;(global-set-key (kbd "C-c C-p") 'mc/mark-previous-lines) ;;marks 2 lines instead of 1 above, not sure why
-
-
 (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
 (add-to-list 'load-path "~/.slime") ; your SLIME directory
 (require 'slime)
