@@ -7,7 +7,7 @@
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
  '(package-selected-packages
-	 '(tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient flymake ace-window python swiper))
+	 '(typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper))
  '(vc-annotate-very-old-color "#DC8CC3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -34,6 +34,7 @@
 ;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 ;; basic custom settings
+(setq exec-path (append exec-path '("/usr/local/bin")))
 (global-set-key (kbd "C-s") 'swiper)
 (helm-mode 1)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
@@ -42,6 +43,7 @@
 (scroll-bar-mode -1)
 (setq scroll-step 1)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'column-number-mode)
 (global-hl-line-mode +1)
 (smartparens-global-mode +1)
 (show-smartparens-global-mode +1)
@@ -64,17 +66,28 @@
 ;; multiple cursors keybidings
 (global-set-key (kbd "C-c C-n") 'mc/mark-next-lines)
 ;;(global-set-key (kbd "C-c C-p") 'mc/mark-previous-lines) ;;marks 2 lines instead of 1 above, not sure why
+;; setup for slime and lisp
 (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
 (add-to-list 'load-path "~/.slime") ; your SLIME directory
 (require 'slime)
 (slime-setup)
-;; make tsx files open with typescript mode
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
-;; make .el files open with SLIME minor mode
-(add-to-list 'auto-mode-alist '("\\.el\\'" . slime-mode))
-(add-to-list 'auto-mode-alist '("\\.el\\'" . show-paren-mode))
-(add-to-list 'auto-mode-alist '("\\.el\\'" . lisp-mode))
 ;; make markdown files open with markdown-mode and fill mode
 (setq-default set-fill-column 89)
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 (add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
+(require 'lsp-mode)
+(require 'tree-sitter)
+(require 'tree-sitter-langs)
+(global-tree-sitter-mode +1)
+(global-flycheck-mode +1)
+(global-company-mode +1)
+(lsp-treemacs-sync-mode 1)
+;; set with guidance from lsp-doctor to improve performance of lsp-mode
+(setq gc-cons-threshold 10000000)
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq lsp-idle-delay 0.500)
+(setq lsp-log-io nil) ; if set to true can cause a performance hit
+(when (memq window-system '(mac ns x))
+	(exec-path-from-shell-initialize))
+;; TODO: add hooks for language major modes
+
+;;; .emacs ends here
