@@ -7,7 +7,7 @@
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
  '(package-selected-packages
-	 '(tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html typescript-mode subatomic-theme tangotango-theme flymd flycheck-kotlin kotlin-mode markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient flymake ace-window python swiper))
+	 '(tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient flymake ace-window python swiper))
  '(vc-annotate-very-old-color "#DC8CC3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
