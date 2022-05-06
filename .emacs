@@ -24,7 +24,10 @@
  '(markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))
  '(markdown-header-face-4 ((t (:inherit outline-4 :foreground "#FBF52D"))))
  '(markdown-header-face-5 ((t (:inherit outline-5 :foreground "#F57FDF"))))
- '(markdown-header-face-6 ((t (:inherit outline-6 :foreground "#C581FA")))))
+ '(markdown-header-face-6 ((t (:inherit outline-6 :foreground "#C581FA"))))
+ '(term-color-blue ((t (:foreground "DeepSkyblue1"))))
+ '(term-color-cyan ((t (:foreground "white"))))
+ '(term-color-magenta ((t (:foreground "white")))))
 (load-theme 'tango-dark t)
 ;; add melpa
 (require 'package)
