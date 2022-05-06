@@ -87,6 +87,7 @@
 (setq-default set-fill-column 89)
 (add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
 (require 'lsp-mode)
+(add-hook 'typescript-mode-hook #'lsp)
 (require 'tree-sitter)
 (require 'tree-sitter-langs)
 (global-tree-sitter-mode +1)
@@ -100,6 +101,10 @@
 (setq lsp-log-io nil) ; if set to true can cause a performance hit
 (when (memq window-system '(mac ns x))
 	(exec-path-from-shell-initialize))
+
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+
 ;; TODO: add hooks for language major modes
 
 ;;; .emacs ends here
