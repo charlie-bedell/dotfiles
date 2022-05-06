@@ -27,7 +27,7 @@
  '(markdown-header-face-6 ((t (:inherit outline-6 :foreground "#C581FA"))))
  '(term-color-blue ((t (:foreground "DeepSkyblue1"))))
  '(term-color-cyan ((t (:foreground "white"))))
- '(term-color-magenta ((t (:foreground "white")))))
+ '(term-color-magenta ((t (:foreground "lightgrey")))))
 (load-theme 'tango-dark t)
 ;; add melpa
 (require 'package)
