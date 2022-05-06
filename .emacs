@@ -63,6 +63,7 @@
 (sp-local-pair 'markdown-mode "*" "*")
 (sp-local-pair 'markdown-mode "**" "**")
 (global-set-key (kbd "C-x o") 'ace-window)
+(setq aw-ignore-on nil)
 (global-set-key (kbd "C-c C-s") 'replace-string)
 ;; crux makes it so you can jump to beginning of line or begging of text if there is whitespace
 (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
