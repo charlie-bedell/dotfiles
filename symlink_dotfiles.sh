@@ -1,3 +1,4 @@
+#!/bin/bash
 for file in .zshrc .emacs
 do
 		ln -s ~/dotfiles/"$file" ~/$file
