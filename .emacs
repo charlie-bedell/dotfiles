@@ -34,6 +34,10 @@
 ;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 ;; basic custom settings
+(defun term-use-sensible-escape-char (&rest ignored)
+  (term-set-escape-char 24))
+(advice-add 'term :after #'term-use-sensible-escape-char)
+(setq ring-bell-function 'ignore)
 (setq exec-path (append exec-path '("/usr/local/bin")))
 (global-set-key (kbd "C-s") 'swiper)
 (helm-mode 1)
