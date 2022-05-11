@@ -9,7 +9,7 @@
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
  '(package-selected-packages
-	 '(typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
+	 '(js2-mode typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -113,7 +113,6 @@
 
 ;; LSPs
 (require 'lsp-mode)
-(add-hook 'typescript-mode-hook #'lsp)
 (require 'tree-sitter)
 (require 'tree-sitter-langs)
 (global-tree-sitter-mode 1)
@@ -130,12 +129,16 @@
 	(exec-path-from-shell-initialize))
 
 ;; hooks
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-(add-hook 'typescript-mode 'lsp-mode)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'prog-mode-hook 'column-number-mode)
 (add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-mode))
+;; language hooks
+(add-hook 'typescript-mode-hook #'lsp)
+(add-hook 'js2-mode-hook #'lsp)
 ;; TODO: add hooks for language major modes
 
 ;;; .emacs ends here
