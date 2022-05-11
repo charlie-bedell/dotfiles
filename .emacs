@@ -3,6 +3,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(helm-buffers-truncate-lines t)
+ '(helm-mini-default-sources '(helm-source-buffers-list helm-source-recentf))
  '(inhibit-startup-buffer-menu t)
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
@@ -38,7 +40,6 @@
 
 ;; basic custom settings
 (load-theme 'tango-dark t)
-(helm-mode 1)
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (setq scroll-step 1)
@@ -53,15 +54,44 @@
 (setq-default tab-width 2) ; set tabs to be two spaces long
 (defvaralias 'c-basic-offset 'tab-width)
 
-;;term
+;; helm
+(helm-mode 1)
+(setq helm-full-frame nil)
+(setq helm-buffer-in-new-frame-p t)
+(setq helm-split-window-inside-p t)
+
+(defun ff-no-resize (arg)
+	"dont use help resize with helm-ff"
+	(interactive "P")
+	(helm-autoresize-mode 0)
+	(helm-find-files arg))
+
+(defun helm-mini-resize ()
+	"use resize with helm-mini"
+	(interactive)
+	(helm-autoresize-mode 1)
+	(helm-mini))
+
+;; term
+(require 'term)
 (defun term-use-sensible-escape-char (&rest ignored)
   (term-set-escape-char 24))
 (advice-add 'term :after #'term-use-sensible-escape-char)
 (setq explicit-shell-file-name '"/bin/zsh")
 
+(defun term (buffer-name)
+	"Start a terminal and rename buffer."
+	(interactive "buffer name: terminal")
+	(setq buffer-name (concat "terminal" buffer-name))
+	(set-buffer (make-term buffer-name "/bin/zsh"))
+	(term-mode)
+	(term-char-mode)
+	(switch-to-buffer (concat "*" buffer-name "*")))
+
 ;; keybindings
 (global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "C-x C-f") 'ff-no-resize)
+(global-set-key (kbd "C-x b") 'helm-mini-resize)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x o") 'ace-window)
 (global-set-key (kbd "C-c C-s") 'replace-string)
