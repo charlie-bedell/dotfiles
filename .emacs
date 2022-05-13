@@ -9,7 +9,7 @@
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
  '(package-selected-packages
-	 '(js2-mode typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
+	 '(use-package web-mode js2-mode typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -53,24 +53,23 @@
 (setq-default indent-tabs-mode t)
 (setq-default tab-width 2) ; set tabs to be two spaces long
 (defvaralias 'c-basic-offset 'tab-width)
+(delete-selection-mode 1)
 
 ;; helm
+(use-package helm
+						 :config
+						 (require 'helm-config)
+						 (setq helm-autoresize-mode       1
+									 helm-autoresize-max-height 30
+									 helm-autoresize-min-height 30
+									 helm-full-frame            nil
+									 helm-buffer-in-new-frame-p nil
+									 helm-split-window-inside-p t)
+						 :bind
+						 ("C-x C-f" . helm-find-files)
+						 ("C-x b" . helm-mini)
+						 ("M-x" . helm-M-x))
 (helm-mode 1)
-(setq helm-full-frame nil)
-(setq helm-buffer-in-new-frame-p t)
-(setq helm-split-window-inside-p t)
-
-(defun ff-no-resize (arg)
-	"dont use help resize with helm-ff"
-	(interactive "P")
-	(helm-autoresize-mode 0)
-	(helm-find-files arg))
-
-(defun helm-mini-resize ()
-	"use resize with helm-mini"
-	(interactive)
-	(helm-autoresize-mode 1)
-	(helm-mini))
 
 ;; term
 (require 'term)
@@ -132,10 +131,17 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'prog-mode-hook 'column-number-mode)
 (add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-mode))
+
+(setq auto-mode-alist
+			(append '(("\\.tsx\\'" . typescript-mode)
+								("\\.ts\\'" . typescript-mode)
+								("\\.jsx\\'" . js2-mode)
+								("\\.js\\'" . js2-mode))
+								;;("\\.jsx\\'" . font-lock-mode)
+								;;("\\.tsx\\'" . font-lock-mode)
+								;;("\\.css\\'" . web-mode))
+								auto-mode-alist))
+
 ;; language hooks
 (add-hook 'typescript-mode-hook #'lsp)
 (add-hook 'js2-mode-hook #'lsp)
