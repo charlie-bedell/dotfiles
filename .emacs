@@ -80,7 +80,7 @@
 
 (defun term (buffer-name)
 	"Start a terminal and rename buffer."
-	(interactive "buffer name: terminal")
+	(interactive "Mbuffer name: terminal")
 	(setq buffer-name (concat "terminal" buffer-name))
 	(set-buffer (make-term buffer-name "/bin/zsh"))
 	(term-mode)
@@ -89,20 +89,18 @@
 
 ;; keybindings
 (global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "C-x C-f") 'ff-no-resize)
-(global-set-key (kbd "C-x b") 'helm-mini-resize)
-(global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x o") 'ace-window)
 (global-set-key (kbd "C-c C-s") 'replace-string)
 (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
-(global-set-key (kbd "C-c C-n") 'mc/mark-next-lines) ;; multi-cursor
-;; (global-set-key (kbd "C-c C-p") 'mc/mark-previous-lines) ;; marks 2 lines instead of 1 above, not sure why
+(global-set-key (kbd "C-;") 'comment-or-uncomment-region)
+;; smartparens pairs
 (sp-local-pair 'lisp-mode "'" "'") ;; adds pair so they can be removed
 (sp-local-pair 'lisp-mode "`" "`")
 (sp-local-pair 'lisp-mode "'" "'" :actions :rem)
 (sp-local-pair 'lisp-mode "`" "`" :actions :rem)
 (sp-local-pair 'markdown-mode "*" "*")
 (sp-local-pair 'markdown-mode "**" "**")
+(sp-local-pair 'typescript-mode "<" ">")
 
 ;; setup for slime and lisp
 (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
@@ -115,6 +113,7 @@
 (require 'tree-sitter)
 (require 'tree-sitter-langs)
 (global-tree-sitter-mode 1)
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 (global-flycheck-mode 1)
 (global-company-mode 1)
 (lsp-treemacs-sync-mode 1)
