@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(helm-boring-file-regexp-list '("\\~$"))
  '(helm-buffers-truncate-lines t)
  '(helm-mini-default-sources '(helm-source-buffers-list helm-source-recentf))
  '(inhibit-startup-buffer-menu t)
@@ -64,7 +65,9 @@
 									 helm-autoresize-min-height 30
 									 helm-full-frame            nil
 									 helm-buffer-in-new-frame-p nil
-									 helm-split-window-inside-p t)
+									 helm-split-window-inside-p t
+									 ;; helm-boring-file-regexp-list edited in custom-variables
+									 helm-ff-skip-boring-files  t)
 						 :bind
 						 ("C-x C-f" . helm-find-files)
 						 ("C-x b" . helm-mini)
@@ -74,7 +77,7 @@
 ;; term
 (require 'term)
 (defun term-use-sensible-escape-char (&rest ignored)
-  (term-set-escape-char 24))
+  (term-set-escape-char 24)) ;; changes escape char from C-c to C-x
 (advice-add 'term :after #'term-use-sensible-escape-char)
 (setq explicit-shell-file-name '"/bin/zsh")
 
@@ -101,6 +104,7 @@
 (sp-local-pair 'markdown-mode "*" "*")
 (sp-local-pair 'markdown-mode "**" "**")
 (sp-local-pair 'typescript-mode "<" ">")
+(sp-local-pair 'python-mode' "'''" "'''")
 
 ;; setup for slime and lisp
 (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
