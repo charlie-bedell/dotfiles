@@ -96,6 +96,7 @@
 (global-set-key (kbd "C-c C-s") 'replace-string)
 (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
 (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c C-n") 'mc/mark-next-lines)
 ;; smartparens pairs
 (sp-local-pair 'lisp-mode "'" "'") ;; adds pair so they can be removed
 (sp-local-pair 'lisp-mode "`" "`")
@@ -105,6 +106,7 @@
 (sp-local-pair 'markdown-mode "**" "**")
 (sp-local-pair 'typescript-mode "<" ">")
 (sp-local-pair 'python-mode' "'''" "'''")
+(sp-local-pair 'python-mode' "\"\"\"" "\"\"\"")
 
 ;; setup for slime and lisp
 (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
@@ -132,6 +134,7 @@
 
 ;; hooks
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'multiple-cursors-mode)
 (add-hook 'prog-mode-hook 'column-number-mode)
 (add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
 
