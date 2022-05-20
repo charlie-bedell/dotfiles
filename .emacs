@@ -56,22 +56,35 @@
 (defvaralias 'c-basic-offset 'tab-width)
 (delete-selection-mode 1)
 
+;; LSP
+(use-package lsp-mode
+	:config
+	(require 'lsp-mode)
+	(setq gc-cons-threshold       10000000
+				read-process-output-max (* 1024 1024)
+				lsp-idle-delay          0.500
+				lsp-log-io              nil ; if set to true can cause performance hit
+				)
+	:hook
+	((typescript-mode . lsp)
+	 (js2-mode . lsp)))
+
 ;; helm
 (use-package helm
-						 :config
-						 (require 'helm-config)
-						 (setq helm-autoresize-mode       1
-									 helm-autoresize-max-height 30
-									 helm-autoresize-min-height 30
-									 helm-full-frame            nil
-									 helm-buffer-in-new-frame-p nil
-									 helm-split-window-inside-p t
-									 ;; helm-boring-file-regexp-list edited in custom-variables
-									 helm-ff-skip-boring-files  t)
-						 :bind
-						 ("C-x C-f" . helm-find-files)
-						 ("C-x b" . helm-mini)
-						 ("M-x" . helm-M-x))
+	:config
+	(require 'helm-config)
+	(setq helm-autoresize-mode       1
+				helm-autoresize-max-height 30
+				helm-autoresize-min-height 30
+				helm-full-frame            nil
+				helm-buffer-in-new-frame-p nil
+				helm-split-window-inside-p t
+				;; helm-boring-file-regexp-list edited in custom-variables
+				helm-ff-skip-boring-files  t)
+	:bind
+	("C-x C-f" . helm-find-files)
+	("C-x b" . helm-mini)
+	("M-x" . helm-M-x))
 (helm-mode 1)
 
 ;; term
@@ -114,21 +127,14 @@
 (require 'slime)
 (slime-setup)
 
-;; LSPs
-(require 'lsp-mode)
 (require 'tree-sitter)
 (require 'tree-sitter-langs)
 (global-tree-sitter-mode 1)
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+
 (global-flycheck-mode 1)
 (global-company-mode 1)
 (lsp-treemacs-sync-mode 1)
 
-;; set with guidance from lsp-doctor to improve performance of lsp-mode
-(setq gc-cons-threshold 10000000)
-(setq read-process-output-max (* 1024 1024)) ;; 1mb
-(setq lsp-idle-delay 0.500)
-(setq lsp-log-io nil) ; if set to true can cause a performance hit
 (when (memq window-system '(mac ns x))
 	(exec-path-from-shell-initialize))
 
@@ -137,6 +143,7 @@
 (add-hook 'prog-mode-hook 'multiple-cursors-mode)
 (add-hook 'prog-mode-hook 'column-number-mode)
 (add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
 (setq auto-mode-alist
 			(append '(("\\.tsx\\'" . typescript-mode)
@@ -147,10 +154,5 @@
 								;;("\\.tsx\\'" . font-lock-mode)
 								;;("\\.css\\'" . web-mode))
 								auto-mode-alist))
-
-;; language hooks
-(add-hook 'typescript-mode-hook #'lsp)
-(add-hook 'js2-mode-hook #'lsp)
-;; TODO: add hooks for language major modes
 
 ;;; .emacs ends here
