@@ -118,8 +118,8 @@
 (sp-local-pair 'markdown-mode "*" "*")
 (sp-local-pair 'markdown-mode "**" "**")
 (sp-local-pair 'typescript-mode "<" ">")
-(sp-local-pair 'python-mode' "'''" "'''")
-(sp-local-pair 'python-mode' "\"\"\"" "\"\"\"")
+(sp-local-pair 'python-mode "'''" "'''")
+(sp-local-pair 'python-mode "\"\"\"" "\"\"\"")
 
 ;; setup for slime and lisp
 (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
