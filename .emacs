@@ -10,7 +10,7 @@
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
  '(package-selected-packages
-	 '(use-package web-mode js2-mode typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
+	 '(rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -19,7 +19,7 @@
  '(helm-ff-directory ((t (:extend t :foreground "DeepSkyBlue1"))))
  '(helm-ff-file ((t (:foreground "lightgrey"))))
  '(helm-selection ((t (:background "gray27" :distant-foreground "white"))))
- '(highlight ((t (:background "#3C4446" :foreground "lightgrey"))))
+ '(sp-pair-overlay-face ((t (:inherit region))))
  '(hl-line ((t (:extend t :background "#3C4446"))))
  '(markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
  '(markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
@@ -51,9 +51,9 @@
 (setq ring-bell-function 'ignore)
 (setq-default set-fill-column 89)
 (setq aw-ignore-on nil) ; allow treemacs with ace-window
-(setq-default indent-tabs-mode t)
-(setq-default tab-width 2) ; set tabs to be two spaces long
-(defvaralias 'c-basic-offset 'tab-width)
+;; (setq-default indent-tabs-mode t)
+;; (setq-default tab-width 2) ; set tabs to be two spaces long
+;; (defvaralias 'c-basic-offset 'tab-width)
 (delete-selection-mode 1)
 
 ;; LSP
@@ -67,7 +67,7 @@
 				)
 	:hook
 	((typescript-mode . lsp)
-	 (js2-mode . lsp)))
+	 (rjsx-mode . lsp)))
 
 ;; helm
 (use-package helm
@@ -144,15 +144,16 @@
 (add-hook 'prog-mode-hook 'column-number-mode)
 (add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+;; (add-hook 'rjsx-mode-hook #'(lambda () (setq-local electric-indent-inhibit t))) ;; not using this but keeping for reference
 
 (setq auto-mode-alist
-			(append '(("\\.tsx\\'" . typescript-mode)
-								("\\.ts\\'" . typescript-mode)
-								("\\.jsx\\'" . js2-mode)
-								("\\.js\\'" . js2-mode))
-								;;("\\.jsx\\'" . font-lock-mode)
-								;;("\\.tsx\\'" . font-lock-mode)
-								;;("\\.css\\'" . web-mode))
-								auto-mode-alist))
+      (append '(("\\.tsx\\'" . typescript-mode)
+		("\\.ts\\'" . typescript-mode)
+		("\\.jsx\\'" . rjsx-mode)
+		("\\.js\\'" . rjsx-mode))
+	      ;;("\\.jsx\\'" . font-lock-mode)
+	      ;;("\\.tsx\\'" . font-lock-mode)
+	      ;;("\\.css\\'" . web-mode))
+	      auto-mode-alist))
 
 ;;; .emacs ends here
