@@ -20,7 +20,7 @@
  '(helm-ff-file ((t (:foreground "lightgrey"))))
  '(helm-selection ((t (:background "gray27" :distant-foreground "white"))))
  '(highlight ((t (:inherit region :background nil :foreground nil))))
- '(hl-line ((t (:extend t :background "#3C4446" :distant-foreground "white"))))
+ ;; '(hl-line ((t (:extend t :background "#3C4446" :distant-foreground "white"))))
  '(markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
  '(markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
  '(markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))
@@ -30,7 +30,7 @@
  '(term-color-blue ((t (:foreground "DeepSkyblue1"))))
  '(term-color-cyan ((t (:foreground "white"))))
  '(term-color-magenta ((t (:foreground "lightgrey"))))
- '(term-color-red ((t (:foreground "#fc3d3d"))))
+ '(term-color-red ((t (:foreground "#fc3d3d")))))
 ;; add melpa
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
