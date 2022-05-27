@@ -10,7 +10,7 @@
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
  '(package-selected-packages
-	 '(rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
+   '(elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -19,8 +19,8 @@
  '(helm-ff-directory ((t (:extend t :foreground "DeepSkyBlue1"))))
  '(helm-ff-file ((t (:foreground "lightgrey"))))
  '(helm-selection ((t (:background "gray27" :distant-foreground "white"))))
- '(sp-pair-overlay-face ((t (:inherit region))))
- '(hl-line ((t (:extend t :background "#3C4446"))))
+ '(highlight ((t (:inherit region :background nil :foreground nil))))
+ '(hl-line ((t (:extend t :background "#3C4446" :distant-foreground "white"))))
  '(markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
  '(markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
  '(markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))
@@ -30,7 +30,7 @@
  '(term-color-blue ((t (:foreground "DeepSkyblue1"))))
  '(term-color-cyan ((t (:foreground "white"))))
  '(term-color-magenta ((t (:foreground "lightgrey"))))
- '(term-color-red ((t (:foreground "#fc3d3d")))))
+ '(term-color-red ((t (:foreground "#fc3d3d"))))
 ;; add melpa
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -40,7 +40,11 @@
 (package-initialize)
 
 ;; basic custom settings
-(load-theme 'tango-dark t)
+(add-to-list 'custom-theme-load-path "~/dotfiles/")
+(if (file-exists-p "~/dotfiles/ayu-dark-theme.el")
+    (load-theme 'ayu-dark t)
+  (load-theme 'tango-dark t))
+(set-frame-font "Menlo 12" nil t)
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (setq scroll-step 1)
@@ -61,26 +65,27 @@
 	:config
 	(require 'lsp-mode)
 	(setq gc-cons-threshold       10000000
-				read-process-output-max (* 1024 1024)
-				lsp-idle-delay          0.500
-				lsp-log-io              nil ; if set to true can cause performance hit
-				)
+	      read-process-output-max (* 1024 1024)
+	      lsp-idle-delay          0.500
+	      lsp-log-io              nil ; if set to true can cause performance hit
+	      )
 	:hook
 	((typescript-mode . lsp)
-	 (rjsx-mode . lsp)))
+	 (rjsx-mode . lsp)
+	 (rust-mode . lsp)))
 
 ;; helm
 (use-package helm
 	:config
 	(require 'helm-config)
 	(setq helm-autoresize-mode       1
-				helm-autoresize-max-height 30
-				helm-autoresize-min-height 30
-				helm-full-frame            nil
-				helm-buffer-in-new-frame-p nil
-				helm-split-window-inside-p t
-				;; helm-boring-file-regexp-list edited in custom-variables
-				helm-ff-skip-boring-files  t)
+	      helm-autoresize-max-height 30
+	      helm-autoresize-min-height 30
+	      helm-full-frame            nil
+	      helm-buffer-in-new-frame-p nil
+	      helm-split-window-inside-p t
+	      ;; helm-boring-file-regexp-list edited in custom-variables
+	      helm-ff-skip-boring-files  t)
 	:bind
 	("C-x C-f" . helm-find-files)
 	("C-x b" . helm-mini)
@@ -150,7 +155,8 @@
       (append '(("\\.tsx\\'" . typescript-mode)
 		("\\.ts\\'" . typescript-mode)
 		("\\.jsx\\'" . rjsx-mode)
-		("\\.js\\'" . rjsx-mode))
+		("\\.js\\'" . rjsx-mode)
+		("\\.rs\\'" . rust-mode))
 	      ;;("\\.jsx\\'" . font-lock-mode)
 	      ;;("\\.tsx\\'" . font-lock-mode)
 	      ;;("\\.css\\'" . web-mode))
