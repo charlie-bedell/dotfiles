@@ -58,6 +58,7 @@
 (global-set-key (kbd "C-c l") #'org-store-link)
 (global-set-key (kbd "C-c a") #'org-agenda)
 (global-set-key (kbd "C-c c") #'org-capture)
+
 ;; (setq-default indent-tabs-mode t)
 ;; (setq-default tab-width 2) ; set tabs to be two spaces long
 ;; (defvaralias 'c-basic-offset 'tab-width)
