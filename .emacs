@@ -10,7 +10,7 @@
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
  '(package-selected-packages
-   '(elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
+   '(org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -20,7 +20,6 @@
  '(helm-ff-file ((t (:foreground "lightgrey"))))
  '(helm-selection ((t (:background "gray27" :distant-foreground "white"))))
  '(highlight ((t (:inherit region :background nil :foreground nil))))
- ;; '(hl-line ((t (:extend t :background "#3C4446" :distant-foreground "white"))))
  '(markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
  '(markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
  '(markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))
@@ -55,10 +54,15 @@
 (setq ring-bell-function 'ignore)
 (setq-default set-fill-column 89)
 (setq aw-ignore-on nil) ; allow treemacs with ace-window
+(delete-selection-mode 1)
+(global-set-key (kbd "C-c l") #'org-store-link)
+(global-set-key (kbd "C-c a") #'org-agenda)
+(global-set-key (kbd "C-c c") #'org-capture)
+
 ;; (setq-default indent-tabs-mode t)
 ;; (setq-default tab-width 2) ; set tabs to be two spaces long
 ;; (defvaralias 'c-basic-offset 'tab-width)
-(delete-selection-mode 1)
+
 
 ;; LSP
 (use-package lsp-mode
