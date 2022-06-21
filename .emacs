@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(helm-boring-file-regexp-list '("\\~$"))
+ '(helm-boring-file-regexp-list '("\\~$" "\\#*\\#"))
  '(helm-buffers-truncate-lines t)
  '(helm-mini-default-sources '(helm-source-buffers-list helm-source-recentf))
  '(inhibit-startup-buffer-menu t)
@@ -115,6 +115,7 @@
 (global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
 (global-set-key (kbd "C-;") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c C-n") 'mc/mark-next-lines)
+(setq smerge-command-prefix "\C-cv") ;; might not work
 ;; smartparens pairs
 (sp-local-pair 'lisp-mode "'" "'") ;; adds pair so they can be removed
 (sp-local-pair 'lisp-mode "`" "`")
