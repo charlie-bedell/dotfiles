@@ -97,5 +97,5 @@ plugins=(git)
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
+alias python="python3"
 source $ZSH/oh-my-zsh.sh

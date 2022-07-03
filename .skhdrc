@@ -1,0 +1,44 @@
+# launch apps
+cmd - return : /Applications/iTerm.app/Contents/MacOS/iTerm2 --single-instance -d ~
+cmd - w : /Applications/Firefox.app/Contents/MacOS/firefox
+cmd - e : /Applications/Emacs.app/Contents/MacOS/Emacs
+
+# focus windows
+cmd - n : yabai -m window --focus next || yabai -m window --focus first
+cmd - h : yabai -m window --focus west
+cmd - j : yabai -m window --focus south
+cmd - k : yabai -m window --focus north
+cmd - l : yabai -m window --focus east
+
+# swap | rotate windows
+cmd - r : yabai -m space --rotate 90
+
+# close window
+cmd - q : yabai -m window --close
+
+# toggle fullscreen
+cmd - f : yabai -m window --toggle zoom-fullscreen
+
+# focus space
+cmd - 1 : yabai -m space --focus one
+cmd - 2 : yabai -m space --focus two
+cmd - 3 : yabai -m space --focus three
+cmd - 4 : yabai -m space --focus four
+cmd - 5 : yabai -m space --focus five
+cmd - 6 : yabai -m space --focus six
+cmd - 7 : yabai -m space --focus seven
+cmd - 8 : yabai -m space --focus eight
+cmd - 9 : yabai -m space --focus nine
+cmd - 0 : yabai -m space --focus ten
+
+# send window to space
+cmd + shift - 1 : yabai -m window --space one
+cmd + shift - 2 : yabai -m window --space two
+cmd + shift - 3 : yabai -m window --space three
+cmd + shift - 4 : yabai -m window --space four
+cmd + shift - 5 : yabai -m window --space five
+cmd + shift - 6 : yabai -m window --space six
+cmd + shift - 7 : yabai -m window --space seven
+cmd + shift - 8 : yabai -m window --space eight
+cmd + shift - 9 : yabai -m window --space nine
+cmd + shift - 0 : yabai -m window --space ten

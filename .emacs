@@ -9,6 +9,7 @@
  '(inhibit-startup-buffer-menu t)
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
+ '(menu-bar-mode nil)
  '(package-selected-packages
    '(org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper)))
 (custom-set-faces
@@ -26,6 +27,7 @@
  '(markdown-header-face-4 ((t (:inherit outline-4 :foreground "#FBF52D"))))
  '(markdown-header-face-5 ((t (:inherit outline-5 :foreground "#F57FDF"))))
  '(markdown-header-face-6 ((t (:inherit outline-6 :foreground "#C581FA"))))
+ '(org-level-4 ((t (:inherit outline-4 :extend nil :foreground "yellow2"))))
  '(term-color-blue ((t (:foreground "DeepSkyblue1"))))
  '(term-color-cyan ((t (:foreground "white"))))
  '(term-color-magenta ((t (:foreground "lightgrey"))))
@@ -165,5 +167,7 @@
 	      ;;("\\.tsx\\'" . font-lock-mode)
 	      ;;("\\.css\\'" . web-mode))
 	      auto-mode-alist))
+
+(set-frame-parameter nil 'undecorated nil)
 
 ;;; .emacs ends here
