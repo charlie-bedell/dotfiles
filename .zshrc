@@ -98,4 +98,6 @@ plugins=(git)
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias python="python3"
+alias -s py=python3
+alias tf='terraform'
 source $ZSH/oh-my-zsh.sh
