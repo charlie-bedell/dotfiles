@@ -60,7 +60,11 @@
 (global-set-key (kbd "C-c l") #'org-store-link)
 (global-set-key (kbd "C-c a") #'org-agenda)
 (global-set-key (kbd "C-c c") #'org-capture)
-
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
+(add-to-list 'initial-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'initial-frame-alist '(ns-appearance . dark))
+(fringe-mode 5)
 ;; (setq-default indent-tabs-mode t)
 ;; (setq-default tab-width 2) ; set tabs to be two spaces long
 ;; (defvaralias 'c-basic-offset 'tab-width)
