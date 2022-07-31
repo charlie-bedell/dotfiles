@@ -83,6 +83,7 @@
 (add-to-list 'initial-frame-alist '(ns-transparent-titlebar . t))
 (add-to-list 'initial-frame-alist '(ns-appearance . dark))
 (fringe-mode 8)
+(global-auto-revert-mode 1)
 ;; (setq-default indent-tabs-mode t)
 ;; (setq-default tab-width 2) ; set tabs to be two spaces long
 ;; (defvaralias 'c-basic-offset 'tab-width)
@@ -142,13 +143,13 @@
 (defun term-use-sensible-escape-char (&rest ignored)
   (term-set-escape-char 24)) ;; changes escape char from C-c to C-x
 (advice-add 'term :after #'term-use-sensible-escape-char)
-(setq explicit-shell-file-name '"/bin/zsh")
+(setq explicit-shell-file-name '"/usr/local/bin/fish")
 
 (defun term (buffer-name)
   "Start a terminal and rename buffer."
   (interactive "Mbuffer name: terminal")
   (setq buffer-name (concat "terminal" buffer-name))
-  (set-buffer (make-term buffer-name "/bin/zsh"))
+  (set-buffer (make-term buffer-name "/usr/local/bin/fish"))
   (term-mode)
   (term-char-mode)
   (switch-to-buffer (concat "*" buffer-name "*")))
