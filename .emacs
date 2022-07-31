@@ -105,7 +105,6 @@
 ;; helm
 (use-package helm
   :config
-  :demand t
   (require 'helm-config)
   (setq helm-autoresize-mode       1
 	helm-autoresize-max-height 30
@@ -146,13 +145,13 @@
 (setq explicit-shell-file-name '"/bin/zsh")
 
 (defun term (buffer-name)
-	"Start a terminal and rename buffer."
-	(interactive "Mbuffer name: terminal")
-	(setq buffer-name (concat "terminal" buffer-name))
-	(set-buffer (make-term buffer-name "/bin/zsh"))
-	(term-mode)
-	(term-char-mode)
-	(switch-to-buffer (concat "*" buffer-name "*")))
+  "Start a terminal and rename buffer."
+  (interactive "Mbuffer name: terminal")
+  (setq buffer-name (concat "terminal" buffer-name))
+  (set-buffer (make-term buffer-name "/bin/zsh"))
+  (term-mode)
+  (term-char-mode)
+  (switch-to-buffer (concat "*" buffer-name "*")))
 
 (if (display-graphic-p)
     ()
