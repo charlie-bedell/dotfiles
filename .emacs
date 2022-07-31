@@ -47,6 +47,18 @@
 (package-initialize)
 
 ;; basic custom settings
+
+
+(defun efs/display-startup-time ()
+  (message "Emacs loaded in %s with %d garbage collections."
+	   (format "%.2f seconds"
+		   (float-time
+		    (time-subtract after-init-time before-init-time)))
+	   gcs-done))
+
+(add-hook 'emacs-startup-hook #'efs/display-startup-time)
+
+
 (add-to-list 'custom-theme-load-path "~/dotfiles/")
 (if (file-exists-p "~/dotfiles/ayu-dark-theme.el")
     (load-theme 'ayu-dark t)
@@ -78,34 +90,35 @@
 
 ;; LSP
 (use-package lsp-mode
-	:config
-	(require 'lsp-mode)
-	(setq gc-cons-threshold       10000000
-	      read-process-output-max (* 1024 1024)
-	      lsp-idle-delay          0.500
-	      lsp-log-io              nil ; if set to true can cause performance hit
-	      )
-	:hook
-	((typescript-mode . lsp)
-	 (rjsx-mode . lsp)
-	 (rust-mode . lsp)))
+  :config
+  (require 'lsp-mode)
+  (setq gc-cons-threshold       10000000
+	read-process-output-max (* 1024 1024)
+	lsp-idle-delay          0.500
+	lsp-log-io              nil ; if set to true can cause performance hit
+	)
+  :hook
+  ((typescript-mode . lsp)
+   (rjsx-mode . lsp)
+   (rust-mode . lsp)))
 
 ;; helm
 (use-package helm
-	:config
-	(require 'helm-config)
-	(setq helm-autoresize-mode       1
-	      helm-autoresize-max-height 30
-	      helm-autoresize-min-height 30
-	      helm-full-frame            nil
-	      helm-buffer-in-new-frame-p nil
-	      helm-split-window-inside-p t
-	      ;; helm-boring-file-regexp-list edited in custom-variables
-	      helm-ff-skip-boring-files  t)
-	:bind
-	("C-x C-f" . helm-find-files)
-	("C-x b" . helm-mini)
-	("M-x" . helm-M-x))
+  :config
+  :demand t
+  (require 'helm-config)
+  (setq helm-autoresize-mode       1
+	helm-autoresize-max-height 30
+	helm-autoresize-min-height 30
+	helm-full-frame            nil
+	helm-buffer-in-new-frame-p nil
+	helm-split-window-inside-p t
+	;; helm-boring-file-regexp-list edited in custom-variables
+	helm-ff-skip-boring-files  t)
+  :bind
+  ("C-x C-f" . helm-find-files)
+  ("C-x b" . helm-mini)
+  ("M-x" . helm-M-x))
 (helm-mode 1)
 
 ;; org
