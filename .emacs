@@ -82,7 +82,7 @@
 (add-to-list 'default-frame-alist '(ns-appearance . dark))
 (add-to-list 'initial-frame-alist '(ns-transparent-titlebar . t))
 (add-to-list 'initial-frame-alist '(ns-appearance . dark))
-(fringe-mode 5)
+(fringe-mode 8)
 ;; (setq-default indent-tabs-mode t)
 ;; (setq-default tab-width 2) ; set tabs to be two spaces long
 ;; (defvaralias 'c-basic-offset 'tab-width)
