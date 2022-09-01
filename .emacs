@@ -9,8 +9,14 @@
  '(inhibit-startup-buffer-menu t)
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
+ '(org-link-frame-setup
+   '((vm . vm-visit-folder-other-frame)
+     (vm-imap . vm-visit-imap-folder-other-frame)
+     (gnus . org-gnus-no-new-news)
+     (file . find-file)
+     (wl . wl-other-frame)))
  '(package-selected-packages
-   '(doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper))
+   '(indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper))
  '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -47,22 +53,20 @@
 (package-initialize)
 
 ;; basic custom settings
-
-
+(require 'indicators)
 (defun efs/display-startup-time ()
   (message "Emacs loaded in %s with %d garbage collections."
 	   (format "%.2f seconds"
 		   (float-time
 		    (time-subtract after-init-time before-init-time)))
 	   gcs-done))
-
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
-
 
 (add-to-list 'custom-theme-load-path "~/dotfiles/")
 (if (file-exists-p "~/dotfiles/ayu-dark-theme.el")
     (load-theme 'ayu-dark t)
   (load-theme 'tango-dark t))
+
 (set-frame-font "Menlo 12" nil t)
 (tool-bar-mode 0)
 (scroll-bar-mode -1)
@@ -75,21 +79,15 @@
 (set-fill-column 80)
 (setq aw-ignore-on nil) ; allow treemacs with ace-window
 (delete-selection-mode 1)
-(global-set-key (kbd "C-c l") #'org-store-link)
-(global-set-key (kbd "C-c a") #'org-agenda)
-(global-set-key (kbd "C-c c") #'org-capture)
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 (add-to-list 'default-frame-alist '(ns-appearance . dark))
-(add-to-list 'initial-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'initial-frame-alist '(ns-appearance . dark))
 (fringe-mode 8)
 (global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t) ;; update dired when files/dirs change
 ;; (setq-default indent-tabs-mode t)
 ;; (setq-default tab-width 2) ; set tabs to be two spaces long
 ;; (defvaralias 'c-basic-offset 'tab-width)
 
-
-;; LSP
 (use-package lsp-mode
   :config
   (require 'lsp-mode)
@@ -103,7 +101,6 @@
    (rjsx-mode . lsp)
    (rust-mode . lsp)))
 
-;; helm
 (use-package helm
   :config
   (require 'helm-config)
@@ -121,13 +118,13 @@
   ("M-x" . helm-M-x))
 (helm-mode 1)
 
-;; org
 (use-package org
   :config
   (require 'org)
-  (setq org-agenda-files '("~/notes/todo.org")
+  (setq org-agenda-files '("~/notes/" "~/RoamNotes/" "~/RoamNotes/journal/")
 	org-directory "~/notes"
 	org-default-notes-file (concat org-directory "/notes.org")
+	org-agenda-timegrid-use-ampm 1
 	org-capture-templates
 	'(("t" "Todo" entry (file+headline "~/notes/todo.org" "Tasks")
 	   "* TODO %?\n  %i\n  %a")
@@ -136,15 +133,56 @@
   :bind
   ("C-c l" . org-store-link)
   ("C-c a" . org-agenda)
-  ("C-c c" . org-capture))
+  ("C-c c" . org-capture)
+  :hook
+  ((org-mode . auto-fill-mode)
+   (org-mode . display-fill-column-indicator-mode)
+   (org-mode . (lambda () (local-set-key "\M-." 'org-open-at-point)))
+   (org-mode . (lambda () (local-set-key "\M-," 'org-mark-ring-goto)))))
+
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory "~/RoamNotes")
+  (org-roam-dailies-directory "journal/")
+  (org-roam-complete-everywhere t)
+  (org-roam-capture-templates
+   '(("d" "default" plain
+      (file "~/RoamNotes/templates/default_note_template.org")
+      :if-new (file+head "${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+FILETAGS:\n")
+      :unnarrowed t)
+     ("p" "project" plain
+      (file "~/RoamNotes/templates/project_note_template.org")
+      :if-new (file+head "${slug}.org" "#+TITLE: ${title}\n#+FILETAGS: Project")
+      :unnarrowed t)))
+  (org-roam-dailies-capture-templates
+   '(("d" "default" entry
+      "* %?"
+      :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>\n#+FILETAGS: Journal"))))
+  :bind
+  (
+   ("C-c n l" . org-roam-buffer-toggle)
+   ("C-c n f" . org-roam-node-find)
+   ("C-c n i" . org-roam-node-insert)
+   :map org-mode-map
+   ("C-M-i" . completion-at-point)
+   :map org-roam-dailies-map
+   ("Y" . org-roam-dailies-capture-yesterday)
+   ("T" . org-roam-dailies-capture-tomorrow))
+  :config
+  (require 'org-roam-dailies)
+  (org-roam-db-autosync-enable))
+
+(org-roam-db-autosync-enable)
 
 ;; term
 (require 'term)
+;; changes escape char from C-c to C-x
 (defun term-use-sensible-escape-char (&rest ignored)
-  (term-set-escape-char 24)) ;; changes escape char from C-c to C-x
+  (term-set-escape-char 24)) 
 (advice-add 'term :after #'term-use-sensible-escape-char)
 (setq explicit-shell-file-name '"/usr/local/bin/fish")
-
+;; make term create new session when invoked
 (defun term (buffer-name)
   "Start a terminal and rename buffer."
   (interactive "Mbuffer name: terminal")
@@ -154,6 +192,7 @@
   (term-char-mode)
   (switch-to-buffer (concat "*" buffer-name "*")))
 
+;; makes it so cut/copy/paste work in terminal emacs
 (if (display-graphic-p)
     ()
   (defun pbcopy ()
@@ -217,10 +256,9 @@
 ;; (add-hook 'prog-mode-hook 'auto-fill-mode)
 (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
 (add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
-(add-hook 'org-mode-hook (lambda ()
-			   (auto-fill-mode 1)
-			   (display-fill-column-indicator-mode 1)))
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+(define-key term-raw-map (kbd "C-y") 'term-paste)
+(define-key term-raw-map (kbd "s-v") 'term-paste)
 ;; (add-hook 'rjsx-mode-hook #'(lambda () (setq-local electric-indent-inhibit t))) ;; not using this but keeping for reference
 
 (setq auto-mode-alist
