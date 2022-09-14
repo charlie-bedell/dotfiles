@@ -167,8 +167,10 @@
    :map org-mode-map
    ("C-M-i" . completion-at-point)
    :map org-roam-dailies-map
-   ("Y" . org-roam-dailies-capture-yesterday)
+   ;; ("Y" . org-roam-dailies-capture-yesterday)
    ("T" . org-roam-dailies-capture-tomorrow))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
   :config
   (require 'org-roam-dailies)
   (org-roam-db-autosync-enable))
@@ -280,5 +282,6 @@
  'org-babel-load-languages
  '((emacs-lisp . t)
    (shell . t)  ; in my case /bin/bash
-   (python . t)))
+   (python . t)
+   (javascript . t))
 ;;; .emacs ends here
