@@ -3,12 +3,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(helm-boring-file-regexp-list '("\\~$" "\\#*\\#"))
- '(helm-buffers-truncate-lines t)
- '(helm-mini-default-sources '(helm-source-buffers-list helm-source-recentf))
- '(inhibit-startup-buffer-menu t)
- '(inhibit-startup-screen t)
- '(initial-buffer-choice t)
  '(org-link-frame-setup
    '((vm . vm-visit-folder-other-frame)
      (vm-imap . vm-visit-imap-folder-other-frame)
@@ -16,7 +10,7 @@
      (file . find-file)
      (wl . wl-other-frame)))
  '(package-selected-packages
-   '(indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit dash transient ace-window python swiper))
+   '(focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
  '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -43,7 +37,8 @@
  '(term-color-blue ((t (:foreground "DeepSkyblue1"))))
  '(term-color-cyan ((t (:foreground "white"))))
  '(term-color-magenta ((t (:foreground "lightgrey"))))
- '(term-color-red ((t (:foreground "#fc3d3d")))))
+ '(term-color-red ((t (:foreground "#fc3d3d"))))
+ '(focus-unfocused ((t (:foreground "gray35")))))
 ;; add melpa
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -56,8 +51,8 @@
 (require 'indicators)
 (defun efs/display-startup-time ()
   (message "Emacs loaded in %s with %d garbage collections."
-	   (format "%.2f seconds"
-		   (float-time
+		   (format "%.2f seconds"
+				   (float-time
 		    (time-subtract after-init-time before-init-time)))
 	   gcs-done))
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
@@ -67,26 +62,79 @@
     (load-theme 'ayu-dark t)
   (load-theme 'tango-dark t))
 
+;; insert a python code block into an org file
+(defun pyorg ()
+  "Append STRING to the end of BUFFER."
+  (interactive)
+  (with-current-buffer (current-buffer)
+    (save-excursion
+      (insert "#+begin_src python /usr/local/bin/python3 \
+:results output\n\n#+end_src\n#+RESULTS:")))
+  (next-line))
+
 (set-frame-font "Menlo 12" nil t)
-(tool-bar-mode 0)
-(scroll-bar-mode -1)
-(setq scroll-step 1)
-(global-hl-line-mode 1)
-(smartparens-global-mode 1)
-(show-smartparens-global-mode 1)
-(setq exec-path (append exec-path '("/usr/local/bin")))
-(setq ring-bell-function 'ignore)
-(set-fill-column 80)
-(setq aw-ignore-on nil) ; allow treemacs with ace-window
-(delete-selection-mode 1)
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'default-frame-alist '(ns-appearance . dark))
-(fringe-mode 8)
-(global-auto-revert-mode 1)
-(setq global-auto-revert-non-file-buffers t) ;; update dired when files/dirs change
-;; (setq-default indent-tabs-mode t)
-;; (setq-default tab-width 2) ; set tabs to be two spaces long
+
+;; (setq-default indent-tabs-mode t) ;; keep just for reference
+;; (setq-default tab-width 4)
 ;; (defvaralias 'c-basic-offset 'tab-width)
+
+(use-package emacs
+  :ensure nil
+  :config
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0)
+  (delete-selection-mode 1)
+  (global-hl-line-mode 1)
+  (fringe-mode 8)
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+  (global-auto-revert-mode 1)
+  (global-flycheck-mode 1)
+  (global-company-mode 1)
+  (setq inhibit-startup-buffer-menu 1
+	inhibit-startup-screen 1
+	initial-buffer-choice t
+	scroll-step 1
+	exec-path (append exec-path '("/usr/local/bin"))
+	ring-bell-function 'ignore
+	global-auto-revert-non-file-buffers t)
+  (setq-default fill-column 80)
+  :bind
+  ("C-c C-s" . replace-string)
+  ("C-;"     . comment-or-uncomment-region)
+  ("C-a"     . crux-move-beginning-of-line)
+  :hook
+  (
+   (prog-mode . display-line-numbers-mode)
+   (prog-mode . multiple-cursors-mode)
+   (prog-mode . column-number-mode)
+   (prog-mode . display-fill-column-indicator-mode)))
+
+(use-package multiple-cursors-mode
+  :bind
+  ("C-c C-n" . mc/mark-next-lines)
+  ("C-c C-p" . mc/mark-previous-lines))
+
+(use-package ace-window
+  :config
+  (setq aw-ignore-on nil)
+  :bind
+  ("C-x o" . ace-window))
+
+(use-package smartparens
+  :init
+  (smartparens-global-mode 1)
+  (show-smartparens-global-mode 1)
+  :config
+  (sp-local-pair 'markdown-mode "*" "*")
+  (sp-local-pair 'markdown-mode "**" "**")
+  (sp-local-pair 'typescript-mode "<" ">")
+  (sp-local-pair 'python-mode "'''" "'''")
+  (sp-local-pair 'python-mode "\"\"\"" "\"\"\"")
+  (sp-local-pair 'emacs-lisp-mode "'" "'") ;; adds pair so they can be removed
+  (sp-local-pair 'emacs-lisp-mode "`" "`")
+  (sp-local-pair 'emacs-lisp-mode "'" "'" :actions :rem)
+  (sp-local-pair 'emacs-lisp-mode "`" "`" :actions :rem))
 
 (use-package lsp-mode
   :config
@@ -102,23 +150,26 @@
    (rust-mode . lsp)))
 
 (use-package helm
+  :init
+  (helm-mode 1)
   :config
-  (require 'helm-config)
-  (setq helm-autoresize-mode       1
-	helm-autoresize-max-height 30
-	helm-autoresize-min-height 30
-	helm-full-frame            nil
-	helm-buffer-in-new-frame-p nil
-	helm-split-window-inside-p t
-	;; helm-boring-file-regexp-list edited in custom-variables
-	helm-ff-skip-boring-files  t)
+  (setq helm-autoresize-mode         1
+	helm-autoresize-max-height   30
+	helm-autoresize-min-height   30
+	helm-full-frame              nil
+	helm-buffer-in-new-frame-p   nil
+	helm-split-window-inside-p   t
+	helm-buffers-truncate-lines  t
+	helm-mini-default-sources    '(helm-source-buffers-list helm-source-recentf)
+	helm-ff-skip-boring-files    t
+	helm-boring-file-regexp-list '("\\~$" "\\#*\\#"))
   :bind
   ("C-x C-f" . helm-find-files)
-  ("C-x b" . helm-mini)
-  ("M-x" . helm-M-x))
-(helm-mode 1)
+  ("C-x b"   . helm-mini)
+  ("M-x"     . helm-M-x))
 
 (use-package org
+  :ensure nil
   :config
   (require 'org)
   (setq org-agenda-files '("~/notes/" "~/RoamNotes/" "~/RoamNotes/journal/")
@@ -137,10 +188,13 @@
   :hook
   ((org-mode . auto-fill-mode)
    (org-mode . display-fill-column-indicator-mode)
+   (org-mode . ivy-mode)
    (org-mode . (lambda () (local-set-key "\M-." 'org-open-at-point)))
    (org-mode . (lambda () (local-set-key "\M-," 'org-mark-ring-goto)))))
 
 (use-package org-roam
+  :init
+  (org-roam-db-autosync-enable)
   :ensure t
   :custom
   (org-roam-directory "~/RoamNotes")
@@ -159,6 +213,9 @@
    '(("d" "default" entry
       "* %?"
       :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>\n#+FILETAGS: Journal"))))
+  (org-roam-node-display-template
+   (concat "${title:*} "
+	   (propertize "${tags:50}" 'face 'org-tag)))
   :bind
   (
    ("C-c n l" . org-roam-buffer-toggle)
@@ -172,35 +229,46 @@
   :bind-keymap
   ("C-c n d" . org-roam-dailies-map)
   :config
-  (require 'org-roam-dailies)
-  (org-roam-db-autosync-enable))
+  (require 'org-roam-dailies))
 
-(org-roam-db-autosync-enable)
+(use-package ivy
+  :ensure t
+  :init
+  (ivy-mode 1)
+  :custom
+  (ivy-height 15)
+  (ivy-count-format "(%d/%d)")
+  :bind
+  ("C-s" . swiper))
 
-;; term
-(require 'term)
-;; changes escape char from C-c to C-x
-(defun term-use-sensible-escape-char (&rest ignored)
-  (term-set-escape-char 24)) 
-(advice-add 'term :after #'term-use-sensible-escape-char)
-(setq explicit-shell-file-name '"/usr/local/bin/fish")
-;; make term create new session when invoked
-(defun term (buffer-name)
-  "Start a terminal and rename buffer."
-  (interactive "Mbuffer name: terminal")
-  (setq buffer-name (concat "terminal" buffer-name))
-  (set-buffer (make-term buffer-name "/usr/local/bin/fish"))
-  (term-mode)
-  (term-char-mode)
-  (switch-to-buffer (concat "*" buffer-name "*")))
+(use-package slime
+  :init
+  (require 'slime)
+  (slime-setup)
+  :config
+  (setq inferior-lisp-program "/usr/local/bin/sbcl") ;; lisp system
+  (add-to-list 'load-path "~/.slime")) ;; slime directory
 
-;; makes it so cut/copy/paste work in terminal emacs
-(if (display-graphic-p)
+(use-package term
+  :config
+  (term-set-escape-char 24) ;; set escape char from C-c to C-x
+  (setq explicit-shell-file-name "/usr/local/bin/fish")
+
+  (defun term (buffer-name)
+    "Start a terminal and rename buffer."
+    (interactive "Mbuffer name: terminal")
+    (setq buffer-name (concat "terminal" buffer-name))
+    (set-buffer (make-term buffer-name "/usr/local/bin/fish"))
+    (term-mode)
+    (term-char-mode)
+    (switch-to-buffer (concat "*" buffer-name "*")))
+
+  (if (display-graphic-p)
     ()
   (defun pbcopy ()
-  (interactive)
-  (call-process-region (point) (mark) "pbcopy")
-  (setq deactivate-mark t))
+    (interactive)
+    (call-process-region (point) (mark) "pbcopy")
+    (setq deactivate-mark t))
 
   (defun pbpaste ()
     (interactive)
@@ -212,68 +280,53 @@
     (delete-region (region-beginning) (region-end)))
   (global-set-key (kbd "M-w") 'pbcopy)
   (global-set-key (kbd "C-y") 'pbpaste)
-  (global-set-key (kbd "C-w") 'pbcut))
+  (global-set-key (kbd "C-w") 'pbcut)))
 
 ;; keybindings
-(global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "C-x o") 'ace-window)
-(global-set-key (kbd "C-c C-s") 'replace-string)
-(global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
-(global-set-key (kbd "C-;") 'comment-or-uncomment-region)
-(global-set-key (kbd "C-c C-n") 'mc/mark-next-lines)
-(global-set-key (kbd "C-c C-p") 'mc/mark-previous-lines)
-(setq smerge-command-prefix "\C-cv") ;; might not work
-;; smartparens pairs
-(sp-local-pair 'lisp-mode "'" "'") ;; adds pair so they can be removed
-(sp-local-pair 'lisp-mode "`" "`")
-(sp-local-pair 'lisp-mode "'" "'" :actions :rem)
-(sp-local-pair 'lisp-mode "`" "`" :actions :rem)
-(sp-local-pair 'markdown-mode "*" "*")
-(sp-local-pair 'markdown-mode "**" "**")
-(sp-local-pair 'typescript-mode "<" ">")
-(sp-local-pair 'python-mode "'''" "'''")
-(sp-local-pair 'python-mode "\"\"\"" "\"\"\"")
-
-;; setup for slime and lisp
-(setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
-(add-to-list 'load-path "~/.slime") ; your SLIME directory
-(require 'slime)
-(slime-setup)
+(global-set-key (kbd "C-c p") 'pyorg)
+;; (setq smerge-command-prefix "\C-cv") ;; might not work
 
 (require 'tree-sitter)
 (require 'tree-sitter-langs)
 (global-tree-sitter-mode 1)
-
-(global-flycheck-mode 1)
-(global-company-mode 1)
 (lsp-treemacs-sync-mode 1)
 
 (when (memq window-system '(mac ns x))
-	(exec-path-from-shell-initialize))
+  (exec-path-from-shell-initialize))
 
 ;; hooks
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(add-hook 'prog-mode-hook 'multiple-cursors-mode)
-(add-hook 'prog-mode-hook 'column-number-mode)
 ;; (add-hook 'prog-mode-hook 'auto-fill-mode)
-(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
 (add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-(define-key term-raw-map (kbd "C-y") 'term-paste)
-(define-key term-raw-map (kbd "s-v") 'term-paste)
+(define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
+(define-key term-raw-map (kbd "s-v") 'term-paste) ;; in use-package?
 ;; (add-hook 'rjsx-mode-hook #'(lambda () (setq-local electric-indent-inhibit t))) ;; not using this but keeping for reference
 
-(setq auto-mode-alist
-      (append '(("\\.tsx\\'" . typescript-mode)
-		("\\.ts\\'" . typescript-mode)
-		("\\.jsx\\'" . rjsx-mode)
-		("\\.js\\'" . rjsx-mode)
-		("\\.rs\\'" . rust-mode)
-		("\\.*rc\\'" . conf-mode))
-	      ;;("\\.jsx\\'" . font-lock-mode)
-	      ;;("\\.tsx\\'" . font-lock-mode)
-	      ;;("\\.css\\'" . web-mode))
-	      auto-mode-alist))
+;; :no-require t to not load use-package
+
+(use-package typescript-mode
+  :mode ("\\.tsx\\'" "\\.ts\\'"))
+
+(use-package rjsx-mode
+  :mode ("\\.jsx\\'" "\\.js\\'"))
+
+(use-package rust-mode
+  :mode ("\\.rs\\'"))
+
+(use-package conf-mode
+  :mode ("\\.*rc\\'"))
+
+;; (setq auto-mode-alist
+;;       (append '(("\\.jsx\\'" . rjsx-mode)
+;; 		("\\.js\\'" . rjsx-mode)
+;; 		("\\.rs\\'" . rust-mode)
+;; 		("\\.*rc\\'" . conf-mode))
+;; 	      ;;("\\.jsx\\'" . font-lock-mode)
+;; 	      ;;("\\.tsx\\'" . font-lock-mode)
+;; 	      ;;("\\.css\\'" . web-mode))
+;; 	      auto-mode-alist))
+
+
 
 ;; org languages
 (setq org-confirm-babel-evaluate nil)
@@ -282,6 +335,6 @@
  'org-babel-load-languages
  '((emacs-lisp . t)
    (shell . t)  ; in my case /bin/bash
-   (python . t)
-   (javascript . t))
+   ;;(javascript . t)
+   (python . t)))
 ;;; .emacs ends here
