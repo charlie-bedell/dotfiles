@@ -12,40 +12,15 @@
  '(package-selected-packages
    '(focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
  '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#161b27" :foreground "#BFBDB6" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "nil" :family "Menlo"))))
- '(helm-ff-directory ((t (:extend t :foreground "DeepSkyBlue1"))))
- '(helm-ff-file ((t (:foreground "lightgrey"))))
- '(helm-selection ((t (:background "gray27" :distant-foreground "white"))))
- '(highlight ((t (:inherit region :background nil :foreground nil))))
- '(markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
- '(markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
- '(markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))
- '(markdown-header-face-4 ((t (:inherit outline-4 :foreground "#FBF52D"))))
- '(markdown-header-face-5 ((t (:inherit outline-5 :foreground "#F57FDF"))))
- '(markdown-header-face-6 ((t (:inherit outline-6 :foreground "#C581FA"))))
- '(org-level-1 ((t (:inherit markdown-header-face-1 :extend nil))))
- '(org-level-2 ((t (:inherit markdown-header-face-2 :extend nil))))
- '(org-level-3 ((t (:inherit markdown-header-face-3 :extend nil))))
- '(org-level-4 ((t (:inherit markdown-header-face-4 :extend nil))))
- '(org-level-5 ((t (:inherit markdown-header-face-5 :extend nil))))
- '(org-level-6 ((t (:inherit markdown-header-face-6 :extend nil))))
- '(term-color-blue ((t (:foreground "DeepSkyblue1"))))
- '(term-color-cyan ((t (:foreground "white"))))
- '(term-color-magenta ((t (:foreground "lightgrey"))))
- '(term-color-red ((t (:foreground "#fc3d3d"))))
- '(focus-unfocused ((t (:foreground "gray35")))))
+
 ;; add melpa
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 ;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
 ;; and `package-pinned-packages`. Most users will not need or want to do this.
-;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(package-initialize)
+;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
+;; (package-initialize)
 
 ;; basic custom settings
 (require 'indicators)
@@ -71,8 +46,6 @@
       (insert "#+begin_src python /usr/local/bin/python3 \
 :results output\n\n#+end_src\n#+RESULTS:")))
   (next-line))
-
-(set-frame-font "Menlo 12" nil t)
 
 ;; (setq-default indent-tabs-mode t) ;; keep just for reference
 ;; (setq-default tab-width 4)
@@ -108,7 +81,24 @@
    (prog-mode . display-line-numbers-mode)
    (prog-mode . multiple-cursors-mode)
    (prog-mode . column-number-mode)
-   (prog-mode . display-fill-column-indicator-mode)))
+   (prog-mode . display-fill-column-indicator-mode))
+  :custom-face
+  (default ((t (:inherit nil :background "#161b27" :foreground "#BFBDB6" :family "Menlo"))))
+  (highlight ((t (:inherit region :background nil :foreground nil)))))
+
+(use-package markdown-mode
+  :custom-face
+  (markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
+  (markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
+  (markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))
+  (markdown-header-face-4 ((t (:inherit outline-4 :foreground "#FBF52D"))))
+  (markdown-header-face-5 ((t (:inherit outline-5 :foreground "#F57FDF"))))
+  (markdown-header-face-6 ((t (:inherit outline-6 :foreground "#C581FA"))))
+  )
+
+(use-package focus
+  :custom-face
+  (focus-unfocused ((t (:foreground "gray35")))))
 
 (use-package multiple-cursors-mode
   :bind
@@ -130,11 +120,7 @@
   (sp-local-pair 'markdown-mode "**" "**")
   (sp-local-pair 'typescript-mode "<" ">")
   (sp-local-pair 'python-mode "'''" "'''")
-  (sp-local-pair 'python-mode "\"\"\"" "\"\"\"")
-  (sp-local-pair 'emacs-lisp-mode "'" "'") ;; adds pair so they can be removed
-  (sp-local-pair 'emacs-lisp-mode "`" "`")
-  (sp-local-pair 'emacs-lisp-mode "'" "'" :actions :rem)
-  (sp-local-pair 'emacs-lisp-mode "`" "`" :actions :rem))
+  (sp-local-pair 'python-mode "\"\"\"" "\"\"\""))
 
 (use-package lsp-mode
   :config
@@ -166,7 +152,11 @@
   :bind
   ("C-x C-f" . helm-find-files)
   ("C-x b"   . helm-mini)
-  ("M-x"     . helm-M-x))
+  ("M-x"     . helm-M-x)
+  :custom-face
+  (helm-ff-directory ((t (:extend t :foreground "DeepSkyBlue1" :background nil))))
+  (helm-ff-file ((t (:foreground "lightgrey"))))
+  (helm-selection ((t (:background "gray27" :distant-foreground "white")))))
 
 (use-package org
   :ensure nil
@@ -190,7 +180,14 @@
    (org-mode . display-fill-column-indicator-mode)
    (org-mode . ivy-mode)
    (org-mode . (lambda () (local-set-key "\M-." 'org-open-at-point)))
-   (org-mode . (lambda () (local-set-key "\M-," 'org-mark-ring-goto)))))
+   (org-mode . (lambda () (local-set-key "\M-," 'org-mark-ring-goto))))
+  :custom-face
+  (org-level-1 ((t (:inherit markdown-header-face-1 :extend nil))))
+  (org-level-2 ((t (:inherit markdown-header-face-2 :extend nil))))
+  (org-level-3 ((t (:inherit markdown-header-face-3 :extend nil))))
+  (org-level-4 ((t (:inherit markdown-header-face-4 :extend nil))))
+  (org-level-5 ((t (:inherit markdown-header-face-5 :extend nil))))
+  (org-level-6 ((t (:inherit markdown-header-face-6 :extend nil)))))
 
 (use-package org-roam
   :init
@@ -280,7 +277,12 @@
     (delete-region (region-beginning) (region-end)))
   (global-set-key (kbd "M-w") 'pbcopy)
   (global-set-key (kbd "C-y") 'pbpaste)
-  (global-set-key (kbd "C-w") 'pbcut)))
+  (global-set-key (kbd "C-w") 'pbcut))
+  :custom-face
+  (term-color-blue ((t (:foreground "DeepSkyblue1"))))
+  (term-color-cyan ((t (:foreground "white"))))
+  (term-color-magenta ((t (:foreground "lightgrey"))))
+  (term-color-red ((t (:foreground "#fc3d3d")))))
 
 ;; keybindings
 (global-set-key (kbd "C-c p") 'pyorg)
