@@ -10,11 +10,18 @@
      (file . find-file)
      (wl . wl-other-frame)))
  '(package-selected-packages
-   '(focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
+   '(esup focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
  '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
 ;; add melpa
-(require 'package)
+;; (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 ;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
 ;; and `package-pinned-packages`. Most users will not need or want to do this.
@@ -87,14 +94,15 @@
   (highlight ((t (:inherit region :background nil :foreground nil)))))
 
 (use-package markdown-mode
+  :hook
+  (markdown-mode . auto-fill-mode)
   :custom-face
   (markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
   (markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
   (markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))
   (markdown-header-face-4 ((t (:inherit outline-4 :foreground "#FBF52D"))))
   (markdown-header-face-5 ((t (:inherit outline-5 :foreground "#F57FDF"))))
-  (markdown-header-face-6 ((t (:inherit outline-6 :foreground "#C581FA"))))
-  )
+  (markdown-header-face-6 ((t (:inherit outline-6 :foreground "#C581FA")))))
 
 (use-package focus
   :custom-face
@@ -124,7 +132,6 @@
 
 (use-package lsp-mode
   :config
-  (require 'lsp-mode)
   (setq gc-cons-threshold       10000000
 	read-process-output-max (* 1024 1024)
 	lsp-idle-delay          0.500
@@ -297,14 +304,10 @@
   (exec-path-from-shell-initialize))
 
 ;; hooks
-;; (add-hook 'prog-mode-hook 'auto-fill-mode)
-(add-hook 'markdown-mode-hook (lambda () (auto-fill-mode 1)))
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 (define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
 (define-key term-raw-map (kbd "s-v") 'term-paste) ;; in use-package?
 ;; (add-hook 'rjsx-mode-hook #'(lambda () (setq-local electric-indent-inhibit t))) ;; not using this but keeping for reference
-
-;; :no-require t to not load use-package
 
 (use-package typescript-mode
   :mode ("\\.tsx\\'" "\\.ts\\'"))
