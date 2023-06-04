@@ -4,13 +4,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-link-frame-setup
-   '((vm . vm-visit-folder-other-frame)
-     (vm-imap . vm-visit-imap-folder-other-frame)
-     (gnus . org-gnus-no-new-news)
-     (file . find-file)
-     (wl . wl-other-frame)))
+	 '((vm . vm-visit-folder-other-frame)
+		 (vm-imap . vm-visit-imap-folder-other-frame)
+		 (gnus . org-gnus-no-new-news)
+		 (file . find-file)
+		 (wl . wl-other-frame)))
  '(package-selected-packages
-   '(esup focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
+	 '(company-lua lua-mode dap-mode fish-mode esup focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
  '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
 
 (custom-set-faces
@@ -18,7 +18,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(js2-object-property ((t (:inherit tree-sitter-hl-face:variable\.parameter)))))
 
 ;; add melpa
 ;; (require 'package)
@@ -61,6 +61,7 @@
 (use-package emacs
   :ensure nil
   :config
+  (add-to-list 'exec-path "/Users/charlesbedell/.nvm/versions/node/v19.7.0/bin/")
   (tool-bar-mode 0)
   (scroll-bar-mode 0)
   (delete-selection-mode 1)
@@ -78,7 +79,9 @@
 	exec-path (append exec-path '("/usr/local/bin"))
 	ring-bell-function 'ignore
 	global-auto-revert-non-file-buffers t)
-  (setq-default fill-column 80)
+  
+  (setq-default fill-column 80
+		tab-width 2)
   :bind
   ("C-c C-s" . replace-string)
   ("C-;"     . comment-or-uncomment-region)
@@ -88,7 +91,8 @@
    (prog-mode . display-line-numbers-mode)
    (prog-mode . multiple-cursors-mode)
    (prog-mode . column-number-mode)
-   (prog-mode . display-fill-column-indicator-mode))
+   (prog-mode . display-fill-column-indicator-mode)
+   (prog-mode . lsp-mode))
   :custom-face
   (default ((t (:inherit nil :background "#161b27" :foreground "#BFBDB6" :family "Menlo"))))
   (highlight ((t (:inherit region :background nil :foreground nil)))))
@@ -136,6 +140,7 @@
 	read-process-output-max (* 1024 1024)
 	lsp-idle-delay          0.500
 	lsp-log-io              nil ; if set to true can cause performance hit
+	lsp-ui-doc-show-with-mouse nil
 	)
   :hook
   ((typescript-mode . lsp)
@@ -318,8 +323,17 @@
 (use-package rust-mode
   :mode ("\\.rs\\'"))
 
+
+(use-package js2-mode
+	:config
+	(setq js-indent-level 2)
+	(setq js2-basic-offset 2))
+
 (use-package conf-mode
   :mode ("\\.*rc\\'"))
+
+(use-package fish-mode
+  :mode ("\\.*fish\\'"))
 
 ;; (setq auto-mode-alist
 ;;       (append '(("\\.jsx\\'" . rjsx-mode)

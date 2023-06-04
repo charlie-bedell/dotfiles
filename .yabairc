@@ -19,8 +19,8 @@ yabai -m config status_bar_clock_icon        
 # --------------------------------
 
 # create spaces
-yabai -m space --create
-yabai -m space --create
+# yabai -m space --create
+# yabai -m space --create
 
 # labels
 yabai -m space 1 --label one
