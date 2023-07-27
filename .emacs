@@ -14,22 +14,18 @@
 		 (wl . wl-other-frame)))
  '(package-selected-packages
 	 '(nano-modeline nano-theme company-lua lua-mode fish-mode esup focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
+ '(warning-suppress-log-types '((lsp-mode) (auto-save) (auto-save) (auto-save)))
  '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(js2-object-property ((t (:inherit tree-sitter-hl-face:variable\.parameter)))))
 
-;; add melpa
+
 ;; (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
-;; and `package-pinned-packages`. Most users will not need or want to do this.
-;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-
 ;; (package-initialize)
 
 ;; basic custom settings
@@ -42,12 +38,11 @@
 	   gcs-done))
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
-
+;; load cusotm ayu-dark theme, else load tango-dark
  (add-to-list 'custom-theme-load-path "~/dotfiles/")
  (if (file-exists-p "~/dotfiles/ayu-dark-theme.el")
      (load-theme 'ayu-dark t)
    (load-theme 'tango-dark t))
-
 
 
 ;; insert a python code block into an org file
@@ -60,33 +55,49 @@
 :results output\n\n#+end_src\n#+RESULTS:")))
   (next-line))
 
+(defun scroll-up-by (arg)
+	"Scroll document up by ARG lines."
+	(interactive)
+	(forward-line arg)
+	(scroll-up arg))
+
+(defun scroll-down-by (arg)
+	"Scroll document down by ARG lines."
+	(interactive)
+	(previous-line arg)
+	(scroll-down arg))
+
+
+
 ;; (setq-default indent-tabs-mode t) ;; keep just for reference
 ;; (setq-default tab-width 4)
 ;; (defvaralias 'c-basic-offset 'tab-width)
 
+(setq inhibit-startup-screen nil)
 (use-package emacs
   :ensure nil
   :config
   (add-to-list 'exec-path "/Users/charlesbedell/.nvm/versions/node/v19.7.0/bin/")
-  (tool-bar-mode 0)
-  (scroll-bar-mode 0)
-  (delete-selection-mode 1)
-  (global-hl-line-mode 1)
-  (fringe-mode 8)
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
-  (global-auto-revert-mode 1)
-  (global-flycheck-mode 1)
-  (global-company-mode 1)
+	(tool-bar-mode 0)
+	(scroll-bar-mode 0)
+	(delete-selection-mode 0)
+	(global-hl-line-mode 1)
+	(fringe-mode 8)
+	(global-auto-revert-mode 1)
+	(global-flycheck-mode 1)
+	(global-company-mode 1)
   (setq inhibit-startup-buffer-menu 1
-	inhibit-startup-screen 1
-	initial-buffer-choice t
-	scroll-step 1
-	exec-path (append exec-path '("/usr/local/bin"))
-	ring-bell-function 'ignore
-	global-auto-revert-non-file-buffers t)
+				inhibit-startup-screen nil
+				initial-buffer-choice t
+				scroll-step 1
+				exec-path (append exec-path '("/usr/local/bin"))
+				ring-bell-function 'ignore
+				global-auto-revert-non-file-buffers t)
   (setq-default fill-column 80
-		tab-width 2)
+								tab-width 2)
+	()
   :bind
   ("C-c C-s" . replace-string)
   ("C-;"     . comment-or-uncomment-region)
@@ -327,6 +338,8 @@
 
 ;; keybindings
 (global-set-key (kbd "C-c p") 'pyorg)
+(global-set-key (kbd "C-v") (lambda () (interactive) (scroll-up-by 5)))
+(global-set-key (kbd "M-v") (lambda () (interactive) (scroll-down-by 5)))
 ;; (setq smerge-command-prefix "\C-cv") ;; might not work
 
 (require 'tree-sitter)
