@@ -57,14 +57,12 @@
 
 (defun scroll-up-by (arg)
 	"Scroll document up by ARG lines."
-	(interactive)
 	(forward-line arg)
 	(scroll-up arg))
 
 (defun scroll-down-by (arg)
 	"Scroll document down by ARG lines."
-	(interactive)
-	(previous-line arg)
+	(forward-line (- arg))
 	(scroll-down arg))
 
 
