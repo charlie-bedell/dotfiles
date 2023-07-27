@@ -3,6 +3,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes nil)
+ '(custom-safe-themes
+	 '("7082b82fc7c747fc1753de8f2648b34a4aa4138cd959ae2b5c80d6b81ad64f85" "de8f2d8b64627535871495d6fe65b7d0070c4a1eb51550ce258cd240ff9394b0" "e7820b899036ae7e966dcaaec29fd6b87aef253748b7de09e74fdc54407a7a02" default))
  '(org-link-frame-setup
 	 '((vm . vm-visit-folder-other-frame)
 		 (vm-imap . vm-visit-imap-folder-other-frame)
@@ -10,7 +13,7 @@
 		 (file . find-file)
 		 (wl . wl-other-frame)))
  '(package-selected-packages
-	 '(company-lua lua-mode dap-mode fish-mode esup focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
+	 '(nano-modeline nano-theme company-lua lua-mode fish-mode esup focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
  '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
 
 (custom-set-faces
@@ -39,10 +42,13 @@
 	   gcs-done))
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
-(add-to-list 'custom-theme-load-path "~/dotfiles/")
-(if (file-exists-p "~/dotfiles/ayu-dark-theme.el")
-    (load-theme 'ayu-dark t)
-  (load-theme 'tango-dark t))
+
+ (add-to-list 'custom-theme-load-path "~/dotfiles/")
+ (if (file-exists-p "~/dotfiles/ayu-dark-theme.el")
+     (load-theme 'ayu-dark t)
+   (load-theme 'tango-dark t))
+
+
 
 ;; insert a python code block into an org file
 (defun pyorg ()
@@ -79,7 +85,6 @@
 	exec-path (append exec-path '("/usr/local/bin"))
 	ring-bell-function 'ignore
 	global-auto-revert-non-file-buffers t)
-  
   (setq-default fill-column 80
 		tab-width 2)
   :bind
@@ -92,21 +97,11 @@
    (prog-mode . multiple-cursors-mode)
    (prog-mode . column-number-mode)
    (prog-mode . display-fill-column-indicator-mode)
-   (prog-mode . lsp-mode))
-  :custom-face
-  (default ((t (:inherit nil :background "#161b27" :foreground "#BFBDB6" :family "Menlo"))))
-  (highlight ((t (:inherit region :background nil :foreground nil)))))
+   (prog-mode . lsp-mode)))
 
 (use-package markdown-mode
   :hook
-  (markdown-mode . auto-fill-mode)
-  :custom-face
-  (markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
-  (markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
-  (markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))
-  (markdown-header-face-4 ((t (:inherit outline-4 :foreground "#FBF52D"))))
-  (markdown-header-face-5 ((t (:inherit outline-5 :foreground "#F57FDF"))))
-  (markdown-header-face-6 ((t (:inherit outline-6 :foreground "#C581FA")))))
+  (markdown-mode . auto-fill-mode))
 
 (use-package focus
   :custom-face
@@ -134,18 +129,51 @@
   (sp-local-pair 'python-mode "'''" "'''")
   (sp-local-pair 'python-mode "\"\"\"" "\"\"\""))
 
-(use-package lsp-mode
+ (use-package lsp-mode
   :config
   (setq gc-cons-threshold       10000000
-	read-process-output-max (* 1024 1024)
-	lsp-idle-delay          0.500
-	lsp-log-io              nil ; if set to true can cause performance hit
-	lsp-ui-doc-show-with-mouse nil
+				read-process-output-max (* 1024 1024)
+				treemacs-space-between-root-nodes nil
+				company-idle-delay 0.0
+				company-minimum-prefix-length 1
+				lsp-idle-delay          0.1
+				lsp-log-io              nil ; if set to true can cause performance hit
+				lsp-ui-doc-show-with-mouse nil
 	)
   :hook
   ((typescript-mode . lsp)
    (rjsx-mode . lsp)
-   (rust-mode . lsp)))
+   (rust-mode . lsp)
+	 (c-mode . lsp)
+	 (c++-mode . lsp)
+	 (python-mode . lsp)))
+
+(use-package dap-mode
+	:config
+	(dap-register-debug-template "python-dap"
+															 (list :type "python"
+																		 :request "attach"
+																		 :name "Run-Configuration"))
+	(dap-register-debug-template "My App"
+															 (list :type "python"
+																		 :args "-i"
+																		 :cwd nil
+																		 :env '(("DEBUG" . 1))
+																		 :target-module (expand-file-name "/Users/charlesbedell/code/practice.py")
+																		 :request "attach"
+																		 :name "Run-Configuration"))
+	(dap-register-debug-provider "python"
+															 (lambda (conf)
+																 (plist-put conf :debugServer 5678)
+																 (plist-put conf :host "localhost")
+																 conf)))
+
+
+
+(use-package dap-python
+	:config
+	(setq dap-python-debugger 'debugpy))
+
 
 (use-package helm
   :init
@@ -182,7 +210,8 @@
 	'(("t" "Todo" entry (file+headline "~/notes/todo.org" "Tasks")
 	   "* TODO %?\n  %i\n  %a")
 	  ("j" "Journal" entry (file+datetree "~/notes/journal.org")
-	   "* %?\nEntered on %U\n  %i\n  %a")))
+	   "* %?\nEntered on %U\n  %i\n  %a"))
+	org-hide-emphasis-markers t)
   :bind
   ("C-c l" . org-store-link)
   ("C-c a" . org-agenda)
@@ -315,7 +344,10 @@
 ;; (add-hook 'rjsx-mode-hook #'(lambda () (setq-local electric-indent-inhibit t))) ;; not using this but keeping for reference
 
 (use-package typescript-mode
-  :mode ("\\.tsx\\'" "\\.ts\\'"))
+  :mode ("\\.tsx\\'" "\\.ts\\'")
+	:config
+	(require 'dap-node)
+	(dap-node-setup))
 
 (use-package rjsx-mode
   :mode ("\\.jsx\\'" "\\.js\\'"))
