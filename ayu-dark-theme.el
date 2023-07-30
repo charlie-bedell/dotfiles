@@ -34,7 +34,7 @@
  '(markdown-header-face-4 ((t (:inherit outline-4 :foreground "#F9C74F"))))
  '(markdown-header-face-5 ((t (:inherit outline-5 :foreground "#F8961E"))))
  '(markdown-header-face-6 ((t (:inherit outline-6 :foreground "#F94144"))))
- '(org-code ((t :inherit help-key-binding)))
+ '(org-verbatim ((t :inherit help-key-binding)))
  ;;'(markdown-header-face-1 ((t (:inherit outline-1 :foreground "#19d1ff"))))
  ;;'(markdown-header-face-2 ((t (:inherit outline-2 :foreground "#46e83a"))))
  ;;'(markdown-header-face-3 ((t (:inherit outline-3 :foreground "#F8A51C"))))

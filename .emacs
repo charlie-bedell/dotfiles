@@ -13,7 +13,7 @@
 		 (file . find-file)
 		 (wl . wl-other-frame)))
  '(package-selected-packages
-	 '(nano-modeline nano-theme company-lua lua-mode fish-mode esup focus indicators org-roam doom-themes org elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
+	 '(org dap-mode org-roam nano-modeline nano-theme company-lua lua-mode fish-mode esup focus indicators doom-themes elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
  '(warning-suppress-log-types '((lsp-mode) (auto-save) (auto-save) (auto-save)))
  '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
 
@@ -21,6 +21,7 @@
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(js2-object-property ((t (:inherit tree-sitter-hl-face:variable\.parameter)))))
 
 
@@ -53,18 +54,19 @@
     (save-excursion
       (insert "#+begin_src python /usr/local/bin/python3 \
 :results output\n\n#+end_src\n#+RESULTS:")))
-  (next-line))
+  (forward-line))
+
 
 (defun scroll-up-by (arg)
 	"Scroll document up by ARG lines."
 	(forward-line arg)
 	(scroll-up arg))
 
+
 (defun scroll-down-by (arg)
 	"Scroll document down by ARG lines."
 	(forward-line (- arg))
 	(scroll-down arg))
-
 
 
 ;; (setq-default indent-tabs-mode t) ;; keep just for reference
@@ -75,6 +77,7 @@
 (use-package emacs
   :ensure nil
   :config
+	(defvar global-auto-revert-non-file-buffers)
   (add-to-list 'exec-path "/Users/charlesbedell/.nvm/versions/node/v19.7.0/bin/")
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
@@ -95,7 +98,6 @@
 				global-auto-revert-non-file-buffers t)
   (setq-default fill-column 80
 								tab-width 2)
-	()
   :bind
   ("C-c C-s" . replace-string)
   ("C-;"     . comment-or-uncomment-region)
@@ -131,6 +133,7 @@
   :init
   (smartparens-global-mode 1)
   (show-smartparens-global-mode 1)
+	:commands (sp-local-pair)
   :config
   (sp-local-pair 'markdown-mode "*" "*")
   (sp-local-pair 'markdown-mode "**" "**")
@@ -138,8 +141,12 @@
   (sp-local-pair 'python-mode "'''" "'''")
   (sp-local-pair 'python-mode "\"\"\"" "\"\"\""))
 
- (use-package lsp-mode
+(use-package lsp-mode
   :config
+	(defvar treemacs-space-between-root-nodes)
+	(defvar company-minimum-prefix-length)
+	(defvar company-idle-delay)
+	(defvar lsp-ui-doc-show-with-mouse)
   (setq gc-cons-threshold       10000000
 				read-process-output-max (* 1024 1024)
 				treemacs-space-between-root-nodes nil
@@ -148,16 +155,17 @@
 				lsp-idle-delay          0.1
 				lsp-log-io              nil ; if set to true can cause performance hit
 				lsp-ui-doc-show-with-mouse nil
-	)
+				)
   :hook
   ((typescript-mode . lsp)
-   (rjsx-mode . lsp)
-   (rust-mode . lsp)
+	 (rjsx-mode . lsp)
+	 (rust-mode . lsp)
 	 (c-mode . lsp)
 	 (c++-mode . lsp)
 	 (python-mode . lsp)))
 
 (use-package dap-mode
+	:commands (dap-register-debug-template dap-register-debug-provider)
 	:config
 	(dap-register-debug-template "python-dap"
 															 (list :type "python"
@@ -179,25 +187,29 @@
 
 
 
-(use-package dap-python
-	:config
-	(setq dap-python-debugger 'debugpy))
+;; (use-package dap-python
+;; 	:config
+;; 	(setq dap-python-debugger 'debugpy))
 
 
 (use-package helm
   :init
   (helm-mode 1)
   :config
+	(defvar helm-buffer-in-new-frame-p)
+	(defvar helm-buffers-truncate-lines)
+	(defvar helm-mini-default-sources)
+	(defvar helm-ff-skip-boring-files)
   (setq helm-autoresize-mode         1
-	helm-autoresize-max-height   30
-	helm-autoresize-min-height   30
-	helm-full-frame              nil
-	helm-buffer-in-new-frame-p   nil
-	helm-split-window-inside-p   t
-	helm-buffers-truncate-lines  t
-	helm-mini-default-sources    '(helm-source-buffers-list helm-source-recentf)
-	helm-ff-skip-boring-files    t
-	helm-boring-file-regexp-list '("\\~$" "\\#*\\#"))
+				helm-autoresize-max-height   30
+				helm-autoresize-min-height   30
+				helm-full-frame              nil
+				helm-buffer-in-new-frame-p   nil
+				helm-split-window-inside-p   t
+				helm-buffers-truncate-lines  t
+				helm-mini-default-sources    '(helm-source-buffers-list helm-source-recentf)
+				helm-ff-skip-boring-files    t
+				helm-boring-file-regexp-list '("\\~$" "\\#*\\#"))
   :bind
   ("C-x C-f" . helm-find-files)
   ("C-x b"   . helm-mini)
@@ -210,17 +222,20 @@
 (use-package org
   :ensure nil
   :config
+	(defvar org-capture-templates)
+	(defvar org-agenda-timegrid-use-ampm)
   (require 'org)
-  (setq org-agenda-files '("~/notes/" "~/RoamNotes/" "~/RoamNotes/journal/")
-	org-directory "~/notes"
-	org-default-notes-file (concat org-directory "/notes.org")
-	org-agenda-timegrid-use-ampm 1
-	org-capture-templates
-	'(("t" "Todo" entry (file+headline "~/notes/todo.org" "Tasks")
-	   "* TODO %?\n  %i\n  %a")
-	  ("j" "Journal" entry (file+datetree "~/notes/journal.org")
-	   "* %?\nEntered on %U\n  %i\n  %a"))
-	org-hide-emphasis-markers t)
+  (setq org-agenda-files '("~/notes/" "~/RoamNotes/" "~/RoamNotes/journal/" "~RoamNotes/todo/")
+				org-directory "~/notes"
+				org-default-notes-file (concat org-directory "/notes.org")
+				org-agenda-timegrid-use-ampm 1
+				
+				org-capture-templates
+				'(("t" "Todo" entry (file+headline "~/notes/todo.org" "Tasks")
+					 "* TODO %?\n  %i\n  %a")
+					("j" "Journal" entry (file+datetree "~/notes/journal.org")
+					 "* %?\nEntered on %U\n  %i\n  %a"))
+				org-hide-emphasis-markers t)
   :bind
   ("C-c l" . org-store-link)
   ("C-c a" . org-agenda)
@@ -243,8 +258,12 @@
   :init
   (org-roam-db-autosync-enable)
   :ensure t
+	:config
+	(require 'org-roam-dailies)
+	(defvar org-mode-map)
+	(defvar org-roam-dailies-map)
   :custom
-  (org-roam-directory "~/RoamNotes")
+	(org-roam-directory "~/RoamNotes")
   (org-roam-dailies-directory "journal/")
   (org-roam-complete-everywhere t)
   (org-roam-capture-templates
@@ -255,28 +274,32 @@
      ("p" "project" plain
       (file "~/RoamNotes/templates/project_note_template.org")
       :if-new (file+head "${slug}.org" "#+TITLE: ${title}\n#+FILETAGS: Project")
+      :unnarrowed t)
+		 ("r" "rolodex" plain
+      (file "~/RoamNotes/templates/rolodex_template.org")
+      :if-new (file+head "rolodex/${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+FILETAGS:\n")
       :unnarrowed t)))
-  (org-roam-dailies-capture-templates
+	
+	(org-roam-dailies-capture-templates
    '(("d" "default" entry
       "* %?"
       :target (file+head "%<%Y-%m-%d>.org" "#+TITLE: %<%Y-%m-%d>\n#+FILETAGS: Journal"))))
   (org-roam-node-display-template
    (concat "${title:*} "
-	   (propertize "${tags:50}" 'face 'org-tag)))
+					 (propertize "${tags:50}" 'face 'org-tag)))
   :bind
-  (
+  (("C-c n c" . org-roam-capture)
    ("C-c n l" . org-roam-buffer-toggle)
    ("C-c n f" . org-roam-node-find)
    ("C-c n i" . org-roam-node-insert)
    :map org-mode-map
    ("C-M-i" . completion-at-point)
+	 
    :map org-roam-dailies-map
    ;; ("Y" . org-roam-dailies-capture-yesterday)
-   ("T" . org-roam-dailies-capture-tomorrow))
-  :bind-keymap
-  ("C-c n d" . org-roam-dailies-map)
-  :config
-  (require 'org-roam-dailies))
+	 ("T" . org-roam-dailies-capture-tomorrow))
+	:bind-keymap
+	("C-c n d" . org-roam-dailies-map))
 
 (use-package ivy
   :ensure t
@@ -297,6 +320,7 @@
   (add-to-list 'load-path "~/.slime")) ;; slime directory
 
 (use-package term
+	:commands (term-set-escape-char term-mode term-char-mode pb-copy)
   :config
   (term-set-escape-char 24) ;; set escape char from C-c to C-x
   (setq explicit-shell-file-name "/usr/local/bin/fish")
@@ -311,23 +335,24 @@
     (switch-to-buffer (concat "*" buffer-name "*")))
 
   (if (display-graphic-p)
-    ()
-  (defun pbcopy ()
-    (interactive)
-    (call-process-region (point) (mark) "pbcopy")
-    (setq deactivate-mark t))
+			()
+		(defun pbcopy ()
+			(interactive)
+			(call-process-region (point) (mark) "pbcopy")
+			(setq deactivate-mark t))
 
-  (defun pbpaste ()
-    (interactive)
-    (call-process-region (point) (if mark-active (mark) (point)) "pbpaste" t t))
+		(defun pbpaste ()
+			(interactive)
+			(call-process-region (point) (if mark-active (mark) (point)) "pbpaste" t t))
 
-  (defun pbcut ()
-    (interactive)
-    (pbcopy)
-    (delete-region (region-beginning) (region-end)))
-  (global-set-key (kbd "M-w") 'pbcopy)
-  (global-set-key (kbd "C-y") 'pbpaste)
-  (global-set-key (kbd "C-w") 'pbcut))
+		(defun pbcut ()
+			(interactive)
+			(declare-function pbcopy ".emacs")
+			(pbcopy)
+			(delete-region (region-beginning) (region-end)))
+		(global-set-key (kbd "M-w") 'pbcopy)
+		(global-set-key (kbd "C-y") 'pbpaste)
+		(global-set-key (kbd "C-w") 'pbcut))
   :custom-face
   (term-color-blue ((t (:foreground "DeepSkyblue1"))))
   (term-color-cyan ((t (:foreground "white"))))
@@ -350,15 +375,13 @@
 
 ;; hooks
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+(require 'term)
 (define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
 (define-key term-raw-map (kbd "s-v") 'term-paste) ;; in use-package?
 ;; (add-hook 'rjsx-mode-hook #'(lambda () (setq-local electric-indent-inhibit t))) ;; not using this but keeping for reference
 
 (use-package typescript-mode
-  :mode ("\\.tsx\\'" "\\.ts\\'")
-	:config
-	(require 'dap-node)
-	(dap-node-setup))
+  :mode ("\\.tsx\\'" "\\.ts\\'"))
 
 (use-package rjsx-mode
   :mode ("\\.jsx\\'" "\\.js\\'"))
