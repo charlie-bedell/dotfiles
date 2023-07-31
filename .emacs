@@ -231,7 +231,7 @@
 				org-agenda-timegrid-use-ampm 1
 				
 				org-capture-templates
-				'(("t" "Todo" entry (file+headline "~/notes/todo.org" "Tasks")
+				'(("t" "Todo" entry (file+headline "~/RoamNotes/todo.org" "Tasks")
 					 "* TODO %?\n  %i\n  %a")
 					("j" "Journal" entry (file+datetree "~/notes/journal.org")
 					 "* %?\nEntered on %U\n  %i\n  %a"))
