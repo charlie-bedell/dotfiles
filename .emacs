@@ -24,7 +24,6 @@
  ;; If there is more than one, they won't work right.
  '(js2-object-property ((t (:inherit tree-sitter-hl-face:variable\.parameter)))))
 
-
 ;; (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 ;; (package-initialize)
@@ -108,7 +107,8 @@
    (prog-mode . multiple-cursors-mode)
    (prog-mode . column-number-mode)
    (prog-mode . display-fill-column-indicator-mode)
-   (prog-mode . lsp-mode)))
+   ;;(prog-mode . lsp-mode)
+	 ))
 
 (use-package markdown-mode
   :hook
@@ -224,22 +224,22 @@
   :config
 	(defvar org-capture-templates)
 	(defvar org-agenda-timegrid-use-ampm)
-  (require 'org)
-  (setq org-agenda-files '("~/notes/" "~/RoamNotes/" "~/RoamNotes/journal/" "~RoamNotes/todo/")
-				org-directory "~/notes"
+  (setq org-agenda-files '("~/RoamNotes/todo.org" "~/RoamNotes/journal/" "~RoamNotes/projects/")
+				org-directory "~/RoamNotes"
 				org-default-notes-file (concat org-directory "/notes.org")
 				org-agenda-timegrid-use-ampm 1
 				
 				org-capture-templates
 				'(("t" "Todo" entry (file+headline "~/RoamNotes/todo.org" "Tasks")
 					 "* TODO %?\n  %i\n  %a")
-					("j" "Journal" entry (file+datetree "~/notes/journal.org")
+					("j" "Journal" entry (file+datetree "~/RoamNotes/journal.org")
 					 "* %?\nEntered on %U\n  %i\n  %a"))
 				org-hide-emphasis-markers t)
   :bind
   ("C-c l" . org-store-link)
   ("C-c a" . org-agenda)
   ("C-c c" . org-capture)
+	("C-c q" . org-tags-view)
   :hook
   ((org-mode . auto-fill-mode)
    (org-mode . display-fill-column-indicator-mode)
@@ -253,6 +253,19 @@
   (org-level-4 ((t (:inherit markdown-header-face-4 :extend nil))))
   (org-level-5 ((t (:inherit markdown-header-face-5 :extend nil))))
   (org-level-6 ((t (:inherit markdown-header-face-6 :extend nil)))))
+
+(use-package org-agenda
+	:ensure nil
+	:commands (org-agenda-skip-entry-if org-agenda-files)
+	:config
+	(setq org-agenda-custom-commands
+				'(("c" . "custom views")
+					("ca" "todo and waiting entries across all of roamNotes" agenda "TODO|WAITING"
+					 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("TODO" "WAITING")))
+						(org-agenda-files (file-expand-wildcards "~/RoamNotes/*.org"))))
+				("ct" "list all todos" todo ""
+					((org-agenda-files (file-expand-wildcard "~/RoamNotes/*.org")))))))
+; calendar style views
 
 (use-package org-roam
   :init
@@ -273,7 +286,7 @@
       :unnarrowed t)
      ("p" "project" plain
       (file "~/RoamNotes/templates/project_note_template.org")
-      :if-new (file+head "${slug}.org" "#+TITLE: ${title}\n#+FILETAGS: Project")
+      :if-new (file+head "projects/${slug}.org" "#+TITLE: ${title}\n#+FILETAGS: Project")
       :unnarrowed t)
 		 ("r" "rolodex" plain
       (file "~/RoamNotes/templates/rolodex_template.org")
