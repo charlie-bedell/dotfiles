@@ -393,6 +393,11 @@
 (define-key term-raw-map (kbd "s-v") 'term-paste) ;; in use-package?
 ;; (add-hook 'rjsx-mode-hook #'(lambda () (setq-local electric-indent-inhibit t))) ;; not using this but keeping for reference
 
+(use-package xref
+	:config
+	(bind-key* "M-." 'xref-find-definitions)
+	(bind-key* "M-," 'xref-pop-marker-stack))
+
 (use-package typescript-mode
   :mode ("\\.tsx\\'" "\\.ts\\'"))
 
