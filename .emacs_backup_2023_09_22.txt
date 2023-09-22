@@ -3,27 +3,33 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes nil)
+ '(custom-safe-themes
+	 '("7082b82fc7c747fc1753de8f2648b34a4aa4138cd959ae2b5c80d6b81ad64f85" "de8f2d8b64627535871495d6fe65b7d0070c4a1eb51550ce258cd240ff9394b0" "e7820b899036ae7e966dcaaec29fd6b87aef253748b7de09e74fdc54407a7a02" default))
+ '(org-link-frame-setup
+	 '((vm . vm-visit-folder-other-frame)
+		 (vm-imap . vm-visit-imap-folder-other-frame)
+		 (gnus . org-gnus-no-new-news)
+		 (file . find-file)
+		 (wl . wl-other-frame)))
  '(package-selected-packages
-	 '(yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smartparens smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit lsp-ui json-mode indicators helm-lsp focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs dap-mode crux company-lua cider ac-html)))
+	 '(devdocs cider clojure-mode modus-themes solo-jazz-theme org org-roam nano-modeline nano-theme company-lua lua-mode fish-mode esup focus indicators doom-themes elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
+ '(warning-suppress-log-types '((lsp-mode) (auto-save) (auto-save) (auto-save)))
+ '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(clojure-keyword-face ((t (:foreground "SeaGreen3"))))
+ '(js2-object-property ((t (:inherit tree-sitter-hl-face:variable\.parameter)))))
 
-;; beginning of custom init
-;; help debug on error
-(when init-file-debug
-  (setq use-package-verbose t
-        use-package-expand-minimally nil
-        use-package-compute-statistics t
-        debug-on-error t))
+;; (require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; (package-initialize)
 
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-
+;; basic custom settings
 (require 'indicators)
 (defun efs/display-startup-time ()
   (message "Emacs loaded in %s with %d garbage collections."
@@ -49,76 +55,169 @@
 :results output\n\n#+end_src\n#+RESULTS:")))
   (forward-char 12))
 
+
 (defun scroll-up-by (arg)
 	"Scroll document up by ARG lines."
 	(forward-line arg)
 	(scroll-up arg))
+
 
 (defun scroll-down-by (arg)
 	"Scroll document down by ARG lines."
 	(forward-line (- arg))
 	(scroll-down arg))
 
-(use-package use-package
-    :custom
-  (use-package-always-pin "nongnu"))
 
-;; M-x describe-personal-keybindings to see all your keybinds
+;; (setq-default indent-tabs-mode t) ;; keep just for reference
+;; (setq-default tab-width 4)
+;; (defvaralias 'c-basic-offset 'tab-width)
+
+
 (use-package emacs
+  :ensure nil
   :config
+	(defvar global-auto-revert-non-file-buffers)
+  (add-to-list 'exec-path "/Users/charlesbedell/.nvm/versions/node/v19.7.0/bin/")
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
-  (tool-bar-mode 0)
-  (scroll-bar-mode 0)
-  (delete-selection-mode 0)
-  (global-hl-line-mode 1)
-  (global-auto-revert-mode 1)
-  :custom
-  (inhibit-startup-buffer-menu 1)
-  (inhibit-startup-screen 1)
-  (add-to-list 'exec-path "~/.nvm/version/node/v19.7.0/bin/")
-  (fringe-mode 8)
-  (fill-column 80)
-  (tab-width 2)
-  (scroll-step 1)
-	(scroll-conservatively 200)
-  (exec-path (append exec-path '("/usr/local/bin")))
-  (ring-bell-function 'ignore)
-  (global-auto-revert-non-file-buffers t)
+	(tool-bar-mode 0)
+	(scroll-bar-mode 0)
+	(global-hl-line-mode 1)
+	(fringe-mode 8)
+	(delete-selection-mode 1)
+	(global-auto-revert-mode 1)
+	(global-flycheck-mode 1)
+	(global-company-mode 1)
+  (setq inhibit-startup-buffer-menu 1
+				inhibit-startup-screen nil
+				initial-buffer-choice t
+				scroll-step 1
+				exec-path (append exec-path '("/usr/local/bin"))
+				ring-bell-function 'ignore
+				global-auto-revert-non-file-buffers t)
+  (setq-default fill-column 80
+								tab-width 2)
   :bind
   ("C-c C-s" . replace-string)
-  ("C-;" . comment-or-uncomment-region)
-  ("C-a" . crux-move-beginning-of-line)
-	("C-s" . swiper)
-	("C-v" . (lambda () (interactive) (scroll-up-by 5)))
-	("M-v" . (lambda () (interactive) (scroll-down-by 5)))
-	
-  :hook (
-	 (prog-mode . display-line-numbers-mode)
-	 (prog-mode . multiple-cursors-mode)
-	 (prog-mode . column-number-mode)
-	 (prog-mode . display-fill-column-indicator-mode)
-	 (prog-mode . global-flycheck-mode)
-	 (prog-mode . global-company-mode)))
+  ("C-;"     . comment-or-uncomment-region)
+  ("C-a"     . crux-move-beginning-of-line)
+  :hook
+  (
+   (prog-mode . display-line-numbers-mode)
+   (prog-mode . multiple-cursors-mode)
+   (prog-mode . column-number-mode)
+   (prog-mode . display-fill-column-indicator-mode)
+   ;;(prog-mode . lsp-mode)
+	 ))
+
+(use-package markdown-mode
+  :hook
+  (markdown-mode . auto-fill-mode))
+
+(use-package focus
+  :custom-face
+  (focus-unfocused ((t (:foreground "gray35")))))
+
+(use-package multiple-cursors-mode
+  :bind
+  ("C-c C-n" . mc/mark-next-lines)
+  ("C-c C-p" . mc/mark-previous-lines))
+
+(use-package ace-window
+  :config
+  (setq aw-ignore-on nil)
+  :bind
+  ("C-x o" . ace-window))
+
+(use-package smartparens
+  :init
+  (smartparens-global-mode 1)
+  (show-smartparens-global-mode 1)
+	:commands (sp-local-pair)
+  :config
+  (sp-local-pair 'markdown-mode "*" "*")
+  (sp-local-pair 'markdown-mode "**" "**")
+  (sp-local-pair 'typescript-mode "<" ">")
+  (sp-local-pair 'python-mode "'''" "'''")
+  (sp-local-pair 'python-mode "\"\"\"" "\"\"\""))
+
+(use-package lsp-mode
+  :config
+	(defvar treemacs-space-between-root-nodes)
+	(defvar company-minimum-prefix-length)
+	(defvar company-idle-delay)
+	(defvar lsp-ui-doc-show-with-mouse)
+  (setq gc-cons-threshold       10000000
+				read-process-output-max (* 1024 1024)
+				treemacs-space-between-root-nodes nil
+				company-idle-delay 0.0
+				company-minimum-prefix-length 1
+				lsp-idle-delay          0.1
+				lsp-log-io              nil ; if set to true can cause performance hit
+				lsp-ui-doc-show-with-mouse nil
+				)
+  :hook
+  ((typescript-mode . lsp)
+	 (rjsx-mode . lsp)
+	 (rust-mode . lsp)
+	 (c-mode . lsp)
+	 (c++-mode . lsp)
+	 (python-mode . lsp)))
+
+(use-package dap-mode
+	:commands (dap-register-debug-template dap-register-debug-provider)
+	:config
+	(dap-register-debug-template "python-dap"
+															 (list :type "python"
+																		 :request "attach"
+																		 :name "Run-Configuration"))
+	(dap-register-debug-template "My App"
+															 (list :type "python"
+																		 :args "-i"
+																		 :cwd nil
+																		 :env '(("DEBUG" . 1))
+																		 :target-module (expand-file-name "/Users/charlesbedell/code/practice.py")
+																		 :request "attach"
+																		 :name "Run-Configuration"))
+	(dap-register-debug-provider "python"
+															 (lambda (conf)
+																 (plist-put conf :debugServer 5678)
+																 (plist-put conf :host "localhost")
+																 conf)))
+
+
+(use-package treemacs
+	:init
+	(add-to-list 'image-types 'svg)
+	(setq treemacs--icon-size 12)
+	(setq treemacs-indentation 1)
+	(setq treemacs-indentation-string (propertize " ┃" 'face 'font-lock-comment-face)))
+(treemacs)
 
 (use-package helm
-	:custom
-	(helm-autoresize-mode 1)
-	(helm-autoresize-max-height 30)
-	(helm-autoresize-min-height 30)
-	(helm-full-frame nil)
-	(helm-buffer-in-new-frame-p nil)
-	(helm-split-window-inside-p t)
-	(helm-buffers-truncate-lines t)
-	(helm-mini-default-sources '(helm-source-buffers-list helm-source-recentf))
-	(helm-boring-file-regexp-list '("\\~$" "[#]*[#]" "\\#*\\#"))
-	(helm-ff-skip-boring-files t)
-	:bind
-	("C-x C-f" . helm-find-files)
-	("C-x b" . helm-mini)
-	("M-x" . helm-M-x)
-	:custom-face
-  (helm-ff-directory ((t (:extend t :foreground "DeepSkyBlue1" :background unspecified))))
+  :init
+  (helm-mode 1)
+  :config
+	(defvar helm-buffer-in-new-frame-p)
+	(defvar helm-buffers-truncate-lines)
+	(defvar helm-mini-default-sources)
+	(defvar helm-ff-skip-boring-files)
+  (setq helm-autoresize-mode         1
+				helm-autoresize-max-height   30
+				helm-autoresize-min-height   30
+				helm-full-frame              nil
+				helm-buffer-in-new-frame-p   nil
+				helm-split-window-inside-p   t
+				helm-buffers-truncate-lines  t
+				helm-mini-default-sources    '(helm-source-buffers-list helm-source-recentf)
+				helm-boring-file-regexp-list '("\\~$" "[#]*[#]" "\\#*\\#")
+				helm-ff-skip-boring-files    t)
+  :bind
+  ("C-x C-f" . helm-find-files)
+  ("C-x b"   . helm-mini)
+  ("M-x"     . helm-M-x)
+  :custom-face
+  (helm-ff-directory ((t (:extend t :foreground "DeepSkyBlue1" :background nil))))
   (helm-ff-file ((t (:foreground "lightgrey"))))
   (helm-selection ((t (:background "gray27" :distant-foreground "white")))))
 
@@ -167,13 +266,14 @@
 					 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("TODO" "WAITING")))
 						(org-agenda-files (file-expand-wildcards "~/RoamNotes/*.org"))))
 				("ct" "list all todos" todo ""
-				 ((org-agenda-files (file-expand-wildcard "~/RoamNotes/*.org")))))))
+					((org-agenda-files (file-expand-wildcard "~/RoamNotes/*.org")))))))
+; calendar style views
 
 (use-package org-roam
-	:defer t
+  :init
+  (org-roam-db-autosync-enable)
   :ensure t
 	:config
-	(org-roam-db-autosync-enable)
 	(require 'org-roam-dailies)
 	(defvar org-mode-map)
 	(defvar org-roam-dailies-map)
@@ -222,7 +322,17 @@
   (ivy-mode 1)
   :custom
   (ivy-height 15)
-  (ivy-count-format "(%d/%d)"))
+  (ivy-count-format "(%d/%d)")
+  :bind
+  ("C-s" . swiper))
+
+(use-package slime
+  :init
+  (require 'slime)
+  (slime-setup)
+  :config
+  (setq inferior-lisp-program "/usr/local/bin/sbcl") ;; lisp system
+  (add-to-list 'load-path "~/.slime")) ;; slime directory
 
 (use-package term
 	:commands (term-set-escape-char term-mode term-char-mode pb-copy)
@@ -264,70 +374,21 @@
   (term-color-magenta ((t (:foreground "lightgrey"))))
   (term-color-red ((t (:foreground "#fc3d3d")))))
 
-(use-package ace-window
-	:custom
-	(aw-ignore-on nil)
-	:bind
-	("C-x o" . ace-window))
-
-(use-package markdown-mode
-	:hook
-	(markdown-mode . auto-fill-mode))
-
-(use-package focus
-	:custom-face
-	(focus-unfocused ((t (:foreground "gray35")))))
-
-(use-package multiple-cursors-mode
-	:bind
-	("C-c C-n" . mc/mark-next-lines)
-	("C-c C-p" . mc/mark-previous-lines))
-
-(use-package smartparens
-	:custom
-	(smartparens-global-mode 1)
-	(show-smartparens-global-mode 1))
-
-(use-package lsp-mode
-	:defer t
-	:custom
-	(gc-cons-threshold 10000000)
-	(read-process-output-max (* 1024 1024))
-	(company-idle-delay 0.2)
-	(company-minimum-prefix-length 1)
-	(lsp-idle-delay 0.1)
-	(lsp-log-io nil) ; if set to true can cause performance hit
-	(lsp-ui-doc-show-with-mouse nil)
-	:hook
-	(typescript-mode . lsp)
-	(rjsx-mode . lsp)
-	(rust-mode . lsp)
-	(c-mode . lsp)
-	(c++-mode . lsp)
-	(python-mode . lsp)
-	)
-
-(use-package treemacs
-	:defer t
-	:init
-	(add-to-list 'image-types 'svg)
-	(setq treemacs--icon-size 12)
-	(setq treemacs-indentation 1)
-	(setq treemacs-indentation-string (propertize " ┃" 'face 'font-lock-comment-face)))
-
 (use-package devdocs
-	:defer t
 	:bind
-	("C-c C-d C-c" . 'devdocs-lookup)
+	("C-c C-d C-c" . 'devdocs-lookup)	
 	)
 
 ;; keybindings
 (global-set-key (kbd "C-c p") 'pyorg)
+(global-set-key (kbd "C-v") (lambda () (interactive) (scroll-up-by 5)))
+(global-set-key (kbd "M-v") (lambda () (interactive) (scroll-down-by 5)))
+;; (setq smerge-command-prefix "\C-cv") ;; might not work
 
-;; TODO figure out if i need this
-;; (require 'tree-sitter-langs)
-;; (global-tree-sitter-mode 1)
-;; (lsp-treemacs-sync-mode 1)
+(require 'tree-sitter)
+(require 'tree-sitter-langs)
+(global-tree-sitter-mode 1)
+(lsp-treemacs-sync-mode 1)
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
@@ -337,6 +398,12 @@
 (require 'term)
 (define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
 (define-key term-raw-map (kbd "s-v") 'term-paste) ;; in use-package?
+;; (add-hook 'rjsx-mode-hook #'(lambda () (setq-local electric-indent-inhibit t))) ;; not using this but keeping for reference
+
+(use-package xref
+	:config
+	(bind-key* "M-." 'xref-find-definitions)
+	(bind-key* "M-," 'xref-pop-marker-stack))
 
 (use-package typescript-mode
   :mode ("\\.tsx\\'" "\\.ts\\'"))
@@ -349,7 +416,6 @@
 
 
 (use-package js2-mode
-	:defer t
 	:config
 	(setq js-indent-level 2)
 	(setq js2-basic-offset 2))
@@ -360,13 +426,25 @@
 (use-package fish-mode
   :mode ("\\.*fish\\'"))
 
+;; (setq auto-mode-alist
+;;       (append '(("\\.jsx\\'" . rjsx-mode)
+;; 		("\\.js\\'" . rjsx-mode)
+;; 		("\\.rs\\'" . rust-mode)
+;; 		("\\.*rc\\'" . conf-mode))
+;; 	      ;;("\\.jsx\\'" . font-lock-mode)
+;; 	      ;;("\\.tsx\\'" . font-lock-mode)
+;; 	      ;;("\\.css\\'" . web-mode))
+;; 	      auto-mode-alist))
+
+
+
+;; org languages
 (setq org-confirm-babel-evaluate nil)
 
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
    (shell . t)  ; in my case /bin/bash
+   ;;(javascript . t)
    (python . t)))
-
-(provide '.emacs)
 ;;; .emacs ends here

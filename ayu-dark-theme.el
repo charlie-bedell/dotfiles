@@ -7,7 +7,7 @@
  '(cursor ((t (:background "#eeeeec"))))
  '(hl-line ((t (:background "#292d35" :extend t))))
  '(region ((t (:background "#3C4446"))))
- '(highlight ((t (:inherit region :background nil :foregroun :nil))))
+ '(highlight ((t (:inherit region :background unspecified :foreground unspecified))))
  '(mode-line ((t (:background "#3c414a" :foreground "#0B0E14"))))
  '(mode-line-inactive ((t (:background "#464b55" :foreground "#0B0E14"))))
  '(tree-sitter-hl-face:tag ((t (:foreground "#39BAE6"))))
