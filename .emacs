@@ -13,7 +13,7 @@
 		 (file . find-file)
 		 (wl . wl-other-frame)))
  '(package-selected-packages
-	 '(org dap-mode org-roam nano-modeline nano-theme company-lua lua-mode fish-mode esup focus indicators doom-themes elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp lsp-treemacs company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
+	 '(devdocs cider clojure-mode modus-themes solo-jazz-theme org org-roam nano-modeline nano-theme company-lua lua-mode fish-mode esup focus indicators doom-themes elisp-format rainbow-mode rust-mode yaml-mode terraform-mode rjsx-mode js2-mode use-package typescript-mode tree-sitter-langs helm-lsp company lsp-ui tree-sitter helm exec-path-from-shell slime json-mode flycheck lsp-mode ac-html flymd markdown-mode smart-tab smartparens crux multiple-cursors dockerfile-mode magit transient ace-window python swiper))
  '(warning-suppress-log-types '((lsp-mode) (auto-save) (auto-save) (auto-save)))
  '(warning-suppress-types '((auto-save) (auto-save) (auto-save))))
 
@@ -22,6 +22,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(clojure-keyword-face ((t (:foreground "SeaGreen3"))))
  '(js2-object-property ((t (:inherit tree-sitter-hl-face:variable\.parameter)))))
 
 ;; (require 'package)
@@ -44,7 +45,6 @@
      (load-theme 'ayu-dark t)
    (load-theme 'tango-dark t))
 
-
 ;; insert a python code block into an org file
 (defun pyorg ()
   "Append STRING to the end of BUFFER."
@@ -53,7 +53,7 @@
     (save-excursion
       (insert "#+begin_src python /usr/local/bin/python3 \
 :results output\n\n#+end_src\n#+RESULTS:")))
-  (forward-line))
+  (forward-char 12))
 
 
 (defun scroll-up-by (arg)
@@ -85,6 +85,7 @@
 	(delete-selection-mode 0)
 	(global-hl-line-mode 1)
 	(fringe-mode 8)
+	(delete-selection-mode 1)
 	(global-auto-revert-mode 1)
 	(global-flycheck-mode 1)
 	(global-company-mode 1)
@@ -186,11 +187,13 @@
 																 conf)))
 
 
-
-;; (use-package dap-python
-;; 	:config
-;; 	(setq dap-python-debugger 'debugpy))
-
+(use-package treemacs
+	:init
+	(add-to-list 'image-types 'svg)
+	(setq treemacs--icon-size 12)
+	(setq treemacs-indentation 1)
+	(setq treemacs-indentation-string (propertize " ┃" 'face 'font-lock-comment-face)))
+(treemacs)
 
 (use-package helm
   :init
@@ -208,8 +211,8 @@
 				helm-split-window-inside-p   t
 				helm-buffers-truncate-lines  t
 				helm-mini-default-sources    '(helm-source-buffers-list helm-source-recentf)
-				helm-ff-skip-boring-files    t
-				helm-boring-file-regexp-list '("\\~$" "\\#*\\#"))
+				helm-boring-file-regexp-list '("\\~$" "[#]*[#]" "\\#*\\#")
+				helm-ff-skip-boring-files    t)
   :bind
   ("C-x C-f" . helm-find-files)
   ("C-x b"   . helm-mini)
@@ -224,7 +227,7 @@
   :config
 	(defvar org-capture-templates)
 	(defvar org-agenda-timegrid-use-ampm)
-  (setq org-agenda-files '("~/RoamNotes/todo.org" "~/RoamNotes/journal/" "~RoamNotes/projects/")
+  (setq org-agenda-files '("~/RoamNotes/todo.org" "~/RoamNotes/journal/" "~/RoamNotes/projects/")
 				org-directory "~/RoamNotes"
 				org-default-notes-file (concat org-directory "/notes.org")
 				org-agenda-timegrid-use-ampm 1
@@ -276,7 +279,7 @@
 	(defvar org-mode-map)
 	(defvar org-roam-dailies-map)
   :custom
-	(org-roam-directory "~/RoamNotes")
+	(org-roam-directory "~/RoamNotes" "~/RoamNotes/rolodex")
   (org-roam-dailies-directory "journal/")
   (org-roam-complete-everywhere t)
   (org-roam-capture-templates
@@ -290,7 +293,7 @@
       :unnarrowed t)
 		 ("r" "rolodex" plain
       (file "~/RoamNotes/templates/rolodex_template.org")
-      :if-new (file+head "rolodex/${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+FILETAGS:\n")
+      :if-new (file+head "rolodex/${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+FILETAGS: Rolodex\n")
       :unnarrowed t)))
 	
 	(org-roam-dailies-capture-templates
@@ -371,6 +374,11 @@
   (term-color-cyan ((t (:foreground "white"))))
   (term-color-magenta ((t (:foreground "lightgrey"))))
   (term-color-red ((t (:foreground "#fc3d3d")))))
+
+(use-package devdocs
+	:bind
+	("C-c C-d C-c" . 'devdocs-lookup)	
+	)
 
 ;; keybindings
 (global-set-key (kbd "C-c p") 'pyorg)
