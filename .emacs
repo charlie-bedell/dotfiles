@@ -283,10 +283,9 @@
 	("C-c C-n" . mc/mark-next-lines)
 	("C-c C-p" . mc/mark-previous-lines))
 
-(use-package smartparens
-	:custom
-	(smartparens-global-mode 1)
-	(show-smartparens-global-mode 1))
+(use-package electric-pair-mode
+	:hook
+	(prog-mode . electric-pair-local-mode))
 
 (use-package lsp-mode
 	:defer t
