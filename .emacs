@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-	 '(yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smartparens smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit lsp-ui json-mode indicators helm-lsp focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs dap-mode crux company-lua cider ac-html)))
+	 '(markdown-mode yaml ace-window helm ivy tree-sitter treemacs yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -287,24 +287,30 @@
 	:hook
 	(prog-mode . electric-pair-local-mode))
 
-(use-package lsp-mode
-	:defer t
+(use-package eglot
 	:custom
-	(gc-cons-threshold 10000000)
-	(read-process-output-max (* 1024 1024))
-	(company-idle-delay 0.2)
-	(company-minimum-prefix-length 1)
-	(lsp-idle-delay 0.1)
-	(lsp-log-io nil) ; if set to true can cause performance hit
-	(lsp-ui-doc-show-with-mouse nil)
-	:hook
-	(typescript-mode . lsp)
-	(rjsx-mode . lsp)
-	(rust-mode . lsp)
-	(c-mode . lsp)
-	(c++-mode . lsp)
-	(python-mode . lsp)
-	)
+	(eglot-events-buffer-size 0) ; if debugging, set to 2000000
+	:custom-face
+	(eglot-highlight-symbol-face ((t (:background "gray40")))))
+
+;; (use-package lsp-mode
+;; 	:defer t
+;; 	:custom
+;; 	(gc-cons-threshold 10000000)
+;; 	(read-process-output-max (* 1024 1024))
+;; 	(company-idle-delay 0.2)
+;; 	(company-minimum-prefix-length 1)
+;; 	(lsp-idle-delay 0.5)
+;; 	(lsp-log-io nil) ; if set to true can cause performance hit
+;; 	(lsp-ui-doc-show-with-mouse nil)
+;; 	:hook
+;; 	(typescript-mode . lsp)
+;; 	(rjsx-mode . lsp)
+;; 	(rust-mode . lsp)
+;; 	(c-mode . lsp)
+;; 	(c++-mode . lsp)
+;; 	(python-mode . lsp)
+;; 	)
 
 (use-package treemacs
 	:defer t
