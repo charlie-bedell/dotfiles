@@ -14,11 +14,11 @@
 
 ;; beginning of custom init
 ;; help debug on error
-(when init-file-debug
-  (setq use-package-verbose t
-        use-package-expand-minimally nil
-        use-package-compute-statistics t
-        debug-on-error t))
+;; (when init-file-debug
+;;   (setq use-package-verbose t
+;;         use-package-expand-minimally nil
+;;         use-package-compute-statistics t
+;;         debug-on-error t))
 
 (require 'package)
 (add-to-list 'package-archives
@@ -70,10 +70,11 @@
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
   (tool-bar-mode 0)
   (scroll-bar-mode 0)
-  (delete-selection-mode 0)
+  (delete-selection-mode 1)
   (global-hl-line-mode 1)
   (global-auto-revert-mode 1)
   :custom
+	(vc-follow-symlinks t)
   (inhibit-startup-buffer-menu 1)
   (inhibit-startup-screen 1)
   (add-to-list 'exec-path "~/.nvm/version/node/v19.7.0/bin/")
@@ -92,7 +93,6 @@
 	("C-s" . swiper)
 	("C-v" . (lambda () (interactive) (scroll-up-by 5)))
 	("M-v" . (lambda () (interactive) (scroll-down-by 5)))
-	
   :hook (
 	 (prog-mode . display-line-numbers-mode)
 	 (prog-mode . multiple-cursors-mode)
