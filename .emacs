@@ -228,13 +228,13 @@
 	:commands (term-set-escape-char term-mode term-char-mode pb-copy)
   :config
   (term-set-escape-char 24) ;; set escape char from C-c to C-x
-  (setq explicit-shell-file-name "/usr/local/bin/fish")
+  (setq explicit-shell-file-name "/bin/zsh")
 
   (defun term (buffer-name)
     "Start a terminal and rename buffer."
     (interactive "Mbuffer name: terminal")
     (setq buffer-name (concat "terminal" buffer-name))
-    (set-buffer (make-term buffer-name "/usr/local/bin/fish"))
+    (set-buffer (make-term buffer-name "/bin/zsh"))
     (term-mode)
     (term-char-mode)
     (switch-to-buffer (concat "*" buffer-name "*")))
@@ -260,9 +260,11 @@
 		(global-set-key (kbd "C-w") 'pbcut))
   :custom-face
   (term-color-blue ((t (:foreground "DeepSkyblue1"))))
-  (term-color-cyan ((t (:foreground "white"))))
+  (term-color-cyan ((t (:foreground "DeepSkyblue1"))))
   (term-color-magenta ((t (:foreground "lightgrey"))))
-  (term-color-red ((t (:foreground "#fc3d3d")))))
+  (term-color-red ((t (:foreground "#fc3d3d"))))
+	;; remove bold, better fix would be to modify LS_COLORS to remove bold
+	(term-bold ((t (:inherit nil)))))
 
 (use-package ace-window
 	:custom
