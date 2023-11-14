@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-	 '(markdown-mode yaml ace-window helm ivy tree-sitter treemacs yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
+	 '(web-mode markdown-mode yaml ace-window helm ivy tree-sitter treemacs yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -366,6 +366,12 @@
 
 (use-package fish-mode
   :mode ("\\.*fish\\'"))
+
+(use-package web-mode
+	:mode ("\\.*html\\'")
+	:custom
+	(web-mode-enable-current-element-highlight t)
+	(web-mode-markup-indent-offset 2))
 
 (setq org-confirm-babel-evaluate nil)
 
