@@ -104,8 +104,8 @@
 (use-package helm
 	:custom
 	(helm-autoresize-mode 1)
-	(helm-autoresize-max-height 30)
-	(helm-autoresize-min-height 30)
+	(helm-autoresize-max-height 0)
+	(helm-autoresize-min-height 28)
 	(helm-full-frame nil)
 	(helm-buffer-in-new-frame-p nil)
 	(helm-split-window-inside-p t)
@@ -113,6 +113,7 @@
 	(helm-mini-default-sources '(helm-source-buffers-list helm-source-recentf))
 	(helm-boring-file-regexp-list '("\\~$" "[#]*[#]" "\\#*\\#"))
 	(helm-ff-skip-boring-files t)
+	(helm-mode 1)
 	:bind
 	("C-x C-f" . helm-find-files)
 	("C-x b" . helm-mini)
