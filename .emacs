@@ -150,12 +150,7 @@
    (org-mode . (lambda () (local-set-key "\M-." 'org-open-at-point)))
    (org-mode . (lambda () (local-set-key "\M-," 'org-mark-ring-goto))))
   :custom-face
-  (org-level-1 ((t (:inherit markdown-header-face-1 :extend nil))))
-  (org-level-2 ((t (:inherit markdown-header-face-2 :extend nil))))
-  (org-level-3 ((t (:inherit markdown-header-face-3 :extend nil))))
-  (org-level-4 ((t (:inherit markdown-header-face-4 :extend nil))))
-  (org-level-5 ((t (:inherit markdown-header-face-5 :extend nil))))
-  (org-level-6 ((t (:inherit markdown-header-face-6 :extend nil)))))
+	)
 
 (use-package org-agenda
 	:ensure nil
