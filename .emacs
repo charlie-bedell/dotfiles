@@ -255,12 +255,9 @@
 		(global-set-key (kbd "C-y") 'pbpaste)
 		(global-set-key (kbd "C-w") 'pbcut))
   :custom-face
-  (term-color-blue ((t (:foreground "DeepSkyblue1"))))
-  (term-color-cyan ((t (:foreground "DeepSkyblue1"))))
-  (term-color-magenta ((t (:foreground "lightgrey"))))
-  (term-color-red ((t (:foreground "#fc3d3d"))))
-	;; remove bold, better fix would be to modify LS_COLORS to remove bold
-	(term-bold ((t (:inherit nil)))))
+  (term-color-blue ((t (:foreground "cyan2" :background "cyan2"))))
+	(term-color-cyan ((t (:foreground "DeepSkyblue1" :background "DeepSkyblue1"))))
+	)
 
 (use-package ace-window
 	:custom
