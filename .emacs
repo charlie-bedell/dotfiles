@@ -352,7 +352,10 @@
 	:defer t
 	:config
 	(setq js-indent-level 2)
-	(setq js2-basic-offset 2))
+	(setq js2-basic-offset 2)
+	:bind
+	(:map js2-mode-map
+				("M-." . nil)))
 
 (use-package conf-mode
   :mode ("\\.*rc\\'"))
@@ -364,7 +367,8 @@
 	:mode ("\\.*html\\'")
 	:custom
 	(web-mode-enable-current-element-highlight t)
-	(web-mode-markup-indent-offset 2))
+	(web-mode-markup-indent-offset 2)
+	(web-mode-auto-close-style 2))
 
 (setq org-confirm-babel-evaluate nil)
 
