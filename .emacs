@@ -374,5 +374,8 @@
    (shell . t)  ; in my case /bin/bash
    (python . t)))
 
+;; backups
+(setq backup-directory-alist '(("." . "./.~")))
+
 (provide '.emacs)
 ;;; .emacs ends here
