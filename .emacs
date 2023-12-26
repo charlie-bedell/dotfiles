@@ -86,6 +86,7 @@
   (exec-path (append exec-path '("/usr/local/bin")))
   (ring-bell-function 'ignore)
   (global-auto-revert-non-file-buffers t)
+	(gc-cons-threshold 10000000)
   :bind
   ("C-c C-s" . replace-string)
   ("C-;" . comment-or-uncomment-region)
@@ -93,6 +94,11 @@
 	("C-s" . swiper)
 	("C-v" . (lambda () (interactive) (scroll-up-by 5)))
 	("M-v" . (lambda () (interactive) (scroll-down-by 5)))
+	("M-," . xref-go-back)
+	("M-." . xref-find-definitions)
+	("M-/" . xref-find-references)
+	("C-c C-p" . backward-list)
+	("C-c C-n" . forward-list)
   :hook (
 	 (prog-mode . display-line-numbers-mode)
 	 (prog-mode . multiple-cursors-mode)
@@ -275,8 +281,8 @@
 
 (use-package multiple-cursors-mode
 	:bind
-	("C-c C-n" . mc/mark-next-lines)
-	("C-c C-p" . mc/mark-previous-lines))
+	("M-n" . mc/mark-next-lines)
+	("M-p" . mc/mark-previous-lines))
 
 (use-package electric-pair-mode
 	:hook
