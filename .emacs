@@ -11,14 +11,35 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
+(setq backtrace-on-redisplay-error t)
 ;; beginning of custom init
 ;; help debug on error
-;; (when init-file-debug
-;;   (setq use-package-verbose t
-;;         use-package-expand-minimally nil
-;;         use-package-compute-statistics t
-;;         debug-on-error t))
+(when init-file-debug
+  (setq use-package-verbose t
+        use-package-expand-minimally nil
+        use-package-compute-statistics t
+        debug-on-error t))
+(setq debug-on-error t)
+(setq toggle-debug-on-quit t)
+;; logging
+;; check logs after crash
+;; (defun save-messages-to-file ()
+;;   "Save the contents of the Messages buffer to a file."
+;;   (with-current-buffer "*Messages*"
+;;     (write-region (point-min) (point-max) "~/messages.log" t 'quiet)))
+
+;; ;; Advice to call save-messages-to-file after each modification to the buffer
+;; (defadvice message (after save-messages-to-file activate)
+;;   "Save the Messages buffer to a file after each modification."
+;;   (save-messages-to-file))
+
+;; ;; Ensure the advice is active
+;; (ad-activate 'message)
+
+
+
+
+
 
 (require 'package)
 (add-to-list 'package-archives
