@@ -19,7 +19,7 @@
  '(font-lock-regexp-grouping-construct ((t (:foreground "#95E6CB"))))
  '(font-lock-regexp-grouping-backslash ((t (:foreground "#95E6CB" :inherit font-lock-regexp-grouping-construct))))
  '(link ((t (:foreground "#0096CF"))))
- '(font-lock-keyword-face ((t (:foreground "#FF8F40"))))
+ '(font-lock-keyword-face ((t (:foreground "#A286F5"))))
  '(tree-sitter-hl-face:string.special ((t (:foreground "#E6B673"))))
  '(tree-sitter-hl-face:constant.builtin ((t (:foreground "#BFBDB6"))))
  '(font-lock-comment-face ((t (:foreground "#636A72"))))
