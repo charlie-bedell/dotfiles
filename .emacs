@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-	 '(flycheck-rust web-mode markdown-mode yaml ace-window helm ivy tree-sitter treemacs yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
+	 '(yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy tree-sitter treemacs yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -37,13 +37,12 @@
 ;; (ad-activate 'message)
 
 
-
-
-
-
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
+;; and `package-pinned-packages`. Most users will not need or want to do this.
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(package-initialize)
 
 (require 'indicators)
 (defun efs/display-startup-time ()
@@ -89,6 +88,7 @@
   :config
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
+	(menu-bar-mode t)
   (tool-bar-mode 0)
   (scroll-bar-mode 0)
   (delete-selection-mode 1)
@@ -120,13 +120,15 @@
 	("M-/" . xref-find-references)
 	("C-c C-p" . backward-list)
 	("C-c C-n" . forward-list)
+	("M-m" . xref-find-apropos)
   :hook (
 	 (prog-mode . display-line-numbers-mode)
 	 (prog-mode . multiple-cursors-mode)
 	 (prog-mode . column-number-mode)
 	 (prog-mode . display-fill-column-indicator-mode)
 	 (prog-mode . global-flycheck-mode)
-	 (prog-mode . global-company-mode)))
+	 (prog-mode . global-company-mode)
+	 (prog-mode . yas-minor-mode)))
 
 (use-package helm
 	:custom
@@ -284,6 +286,13 @@
   :custom-face
   (term-color-blue ((t (:foreground "cyan2" :background "cyan2"))))
 	(term-color-cyan ((t (:foreground "DeepSkyblue1" :background "DeepSkyblue1"))))
+	)
+
+(use-package yasnippet
+	;; use [TAB] or C-i to expand snippets
+	:config
+	(setq yas-snippet-dirs (append yas-snippet-dirs
+																 '("~/dotfiles/yasnippets")))
 	)
 
 (use-package ace-window

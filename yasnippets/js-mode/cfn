@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: componentFunction
+# key: cfn
+# --
+
+const ${1:$$(capitalize yas-text)} = (props) => {
+			
+	const { $2 } = props;
+
+	return (
+		<${3:div}>
+			$0
+		</$3>
+	);
+};
+
+export default $1;

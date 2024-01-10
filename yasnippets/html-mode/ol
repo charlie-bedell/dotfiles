@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: orderedListTag
+# key: ol
+# --
+
+<ol>
+	<li>
+	$0
+	</li>
+</ol>

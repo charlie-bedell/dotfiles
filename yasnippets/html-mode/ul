@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: unorderedListTag
+# key: ul
+# --
+
+<ul>
+	<li>
+	$0
+	</li>
+</ul>
