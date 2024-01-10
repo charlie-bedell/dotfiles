@@ -1,27 +1,12 @@
 #!/usr/bin/env sh
-# yabai start
-sudo yabai --load-sa
-yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 
-# bar settings
-yabai -m config status_bar                   off
-yabai -m config status_bar_text_font         "Helvetica Neue:Bold:12.0"
-yabai -m config status_bar_icon_font         "FontAwesome:Regular:12.0"
-yabai -m config status_bar_background_color  0xff202020
-yabai -m config status_bar_foreground_color  0xffa8a8a8
-yabai -m config status_bar_space_icon_strip  I II III IV V VI VII VIII IX X
-yabai -m config status_bar_power_icon_strip   
-yabai -m config status_bar_space_icon        
-yabai -m config status_bar_clock_icon        
+# yabai start
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
 
 # --------------------------------
 # yabai config
 # --------------------------------
-
-# create spaces
-# yabai -m space --create
-# yabai -m space --create
-
 # labels
 yabai -m space 1 --label one
 yabai -m space 2 --label two
@@ -35,48 +20,24 @@ yabai -m space 9 --label nine
 yabai -m space 10 --label ten
 
 # allow yabai to manage emacs
-yabai -m rule --add app=Emacs manage=on
-
-# mouse focuses window on hover
-yabai -m config focus_follows_mouse autofocus
-yabai -m config mouse_follows_focus on
-
-# adds a border
-yabai -m config window_border off
-yabai -m config window_border_width 5
-
-#  bsp or float (default: float)
-yabai -m config layout bsp
-
-# Set all padding and gaps to 20pt (default: 0)
-yabai -m config external_bar   all:34:0
-yabai -m config top_padding    0
-yabai -m config bottom_padding 5
-yabai -m config left_padding   5
-yabai -m config right_padding  5
-yabai -m config window_gap     5
-
-# makes it so all windows occupy the same space
-yabai -m config auto_balance on
-
-# set mouse interaction modifier key (default: fn)
-yabai -m config mouse_modifier fn
-
-# set modifier + left-click drag to move window (default: move)
-yabai -m config mouse_action1 move
-
-# set modifier + right-click drag to resize window (default: resize)
-yabai -m config mouse_action2 resize
-
-# floating windows are always on top (default: off)
-yabai -m config window_topmost off
-
-# modify window shadows (default: on, options: on, off, float)
-# example: show shadows only for floating windows
-yabai -m config window_shadow float
-
-# window opacity (default: off)
-# example: render all unfocused windows with 90% opacity
-yabai -m config window_opacity on
-yabai -m config active_window_opacity 1.0
-yabai -m config normal_window_opacity 0.9
+# yabai -m rule --add app=Emacs manage=on
+# see GH for config options
+# https://github.com/koekeishiya/yabai/blob/master/doc/yabai.asciidoc#config
+yabai -m config                            \
+			focus_follows_mouse        autofocus \
+			mouse_follows_focus               on \
+			layout                           bsp \
+			external_bar                all:34:0 \
+			top_padding                        0 \
+			bottom_padding                     5 \
+			left_padding                       5 \
+			right_padding                      5 \
+			window_gap                         5 \
+			auto_balance                      on \
+			mouse_modifier                    fn \
+			mouse_action1                   move \
+			mouse_action2                 resize \
+			window_shadow                  float \
+			window_opacity                    on \
+			active_window_opacity            1.0 \
+			normal_window_opacity            0.9 \

@@ -1,7 +1,7 @@
 # launch apps
 cmd - return : /Applications/iTerm.app/Contents/MacOS/iTerm2 --single-instance -d ~
 cmd - w : /Applications/Firefox.app/Contents/MacOS/firefox
-cmd - e : /Applications/Emacs.app/Contents/MacOS/Emacs
+cmd - e : /usr/local/opt/emacs-plus@29/Emacs.app/Contents/MacOS/Emacs
 
 # focus windows
 cmd - n : yabai -m window --focus next || yabai -m window --focus first
