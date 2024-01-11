@@ -94,6 +94,7 @@
   (delete-selection-mode 1)
   (global-hl-line-mode 1)
   (global-auto-revert-mode 1)
+	;; (yas-global-mode 1)
   :custom
 	(vc-follow-symlinks t)
   (inhibit-startup-buffer-menu 1)
@@ -127,8 +128,7 @@
 	 (prog-mode . column-number-mode)
 	 (prog-mode . display-fill-column-indicator-mode)
 	 (prog-mode . global-flycheck-mode)
-	 (prog-mode . global-company-mode)
-	 (prog-mode . yas-minor-mode)))
+	 (prog-mode . global-company-mode)))
 
 (use-package helm
 	:custom
@@ -290,10 +290,13 @@
 
 (use-package yasnippet
 	;; use [TAB] or C-i to expand snippets
+	:commands (yas-reload-all)
 	:config
 	(setq yas-snippet-dirs (append yas-snippet-dirs
 																 '("~/dotfiles/yasnippets")))
-	)
+	(yas-reload-all)
+	:hook
+	(prog-mode . yas-minor-mode))
 
 (use-package ace-window
 	:custom

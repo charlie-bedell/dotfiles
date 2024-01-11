@@ -1,6 +1,7 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: map
+# key: map
 # --
 ${1:arr}.map((${2:x}) => {
-  return $2
+  return $2;
 });

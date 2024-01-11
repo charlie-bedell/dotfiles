@@ -1,5 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: each
+# key: each
 # --
 ${1:arr}.forEach((${2:x}) => {
   $0

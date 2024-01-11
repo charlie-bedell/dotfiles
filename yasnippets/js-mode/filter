@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: filter
+# key: filter
+# --
+${1:arr}.filter((${2:x}) => ($2$0));

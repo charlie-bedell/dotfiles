@@ -5,4 +5,4 @@
 # key: imp
 # --
 
-import { $2 } from '${1:module}'$0
+import { $2 } from '${1:module}';$0
