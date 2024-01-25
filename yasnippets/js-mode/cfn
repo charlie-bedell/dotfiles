@@ -3,9 +3,11 @@
 # key: cfn
 # --
 
-const ${1:$$(capitalize yas-text)} = (props) => {
+// import './$1.css';
+
+const ${1:Component} = (props) => {
 			
-	const { $2 } = props;
+	// const { $2 } = props;
 
 	return (
 		<${3:div}>
