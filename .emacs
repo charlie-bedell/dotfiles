@@ -4,13 +4,14 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-	 '(yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy tree-sitter treemacs yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
+	 '(lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy tree-sitter treemacs yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(eglot-inlay-hint-face ((t (:inherit shadow :box (:line-width (1 . 1) :color "grey75" :style flat-button) :height 0.8)))))
+ '(eglot-inlay-hint-face ((t (:inherit shadow :box (:line-width (1 . 1) :color "grey75" :style flat-button) :height 0.8))))
+ '(term-color-bright-blue ((t (:foreground "DodgerBlue2")))))
 (setq backtrace-on-redisplay-error t)
 ;; beginning of custom init
 ;; help debug on error
@@ -130,6 +131,14 @@
 	 (prog-mode . global-flycheck-mode)
 	 (prog-mode . global-company-mode)))
 
+(use-package python
+  :hook (python-mode . my-python-mode-setup)
+  :config
+	(setq-local python-indent-offset 4)
+  (defun my-python-mode-setup ()
+    (setq-local flycheck-disabled-checkers '(python-pylint python-flake8))
+		(setq-local python-indent-offset 4)))
+
 (use-package helm
 	:custom
 	(helm-autoresize-mode 1)
@@ -161,7 +170,6 @@
 				org-directory "~/RoamNotes"
 				org-default-notes-file (concat org-directory "/notes.org")
 				org-agenda-timegrid-use-ampm 1
-				
 				org-capture-templates
 				'(("t" "Todo" entry (file+headline "~/RoamNotes/todo.org" "Tasks")
 					 "* TODO %?\n  %i\n  %a")
@@ -219,7 +227,7 @@
       (file "~/RoamNotes/templates/rolodex_template.org")
       :if-new (file+head "rolodex/${slug}.org" "#+TITLE: ${title}\n#+DATE: %U\n#+FILETAGS: Rolodex\n")
       :unnarrowed t)))
-	
+
 	(org-roam-dailies-capture-templates
    '(("d" "default" entry
       "* %?"
@@ -234,7 +242,7 @@
    ("C-c n i" . org-roam-node-insert)
    :map org-mode-map
    ("C-M-i" . completion-at-point)
-	 
+
    :map org-roam-dailies-map
    ;; ("Y" . org-roam-dailies-capture-yesterday)
 	 ("T" . org-roam-dailies-capture-tomorrow))
@@ -288,6 +296,10 @@
 	(term-color-cyan ((t (:foreground "DeepSkyblue1" :background "DeepSkyblue1"))))
 	)
 
+(use-package flycheck
+	:custom
+	(setq-default flycheck-disabled-checkers '(python-flake8 python-pylint)))
+
 (use-package yasnippet
 	;; use [TAB] or C-i to expand snippets
 	:commands (yas-reload-all)
@@ -329,6 +341,12 @@
                ("rust-analyzer" :initializationOptions (:check (:command "clippy")))))
 	:custom-face
 	(eglot-highlight-symbol-face ((t (:background "gray40")))))
+
+;; (use-package lsp-pyright
+;;   :ensure t
+;;   :hook (python-mode . (lambda ()
+;;                           (require 'lsp-pyright)
+;;                           (eglot))))  ; or lsp-deferred
 
 ;; (use-package lsp-mode
 ;; 	:defer t
