@@ -10,18 +10,18 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(eglot-inlay-hint-face ((t (:inherit shadow :box (:line-width (1 . 1) :color "grey75" :style flat-button) :height 0.8))))
- '(term-color-bright-blue ((t (:foreground "DodgerBlue2")))))
-(setq backtrace-on-redisplay-error t)
+ )
+
+;; (setq backtrace-on-redisplay-error t)
 ;; beginning of custom init
 ;; help debug on error
-(when init-file-debug
-  (setq use-package-verbose t
-        use-package-expand-minimally nil
-        use-package-compute-statistics t
-        debug-on-error t))
-(setq debug-on-error t)
-(setq toggle-debug-on-quit t)
+;; (when init-file-debug
+;;   (setq use-package-verbose t
+;;         use-package-expand-minimally nil
+;;         use-package-compute-statistics t
+;;         debug-on-error t))
+;; (setq debug-on-error t)
+;; (setq toggle-debug-on-quit t)
 ;; logging
 ;; check logs after crash
 ;; (defun save-messages-to-file ()
@@ -33,11 +33,8 @@
 ;; (defadvice message (after save-messages-to-file activate)
 ;;   "Save the Messages buffer to a file after each modification."
 ;;   (save-messages-to-file))
-
 ;; ;; Ensure the advice is active
 ;; (ad-activate 'message)
-
-
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 ;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
