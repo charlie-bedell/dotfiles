@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: macroDerive
+# key: der
+# --
+
+#[derive($0)]
