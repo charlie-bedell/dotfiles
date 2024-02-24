@@ -5,13 +5,13 @@
  ;; If there is more than one, they won't work right.
  '(eglot-ignored-server-capabilities '(:inlayHintProvider) nil nil "Customized with use-package eglot")
  '(package-selected-packages
-	 '(lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy tree-sitter treemacs yaml-mode use-package typescript-mode tree-sitter-langs terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
+	 '(lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy treemacs yaml-mode use-package typescript-mode terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(treemacs-root-face ((t (:inherit font-lock-constant-face :foreground "burlywood1" :underline t :height 1.2)))))
 
 ;; (setq backtrace-on-redisplay-error t)
 ;; beginning of custom init
@@ -93,7 +93,6 @@
   (delete-selection-mode 1)
   (global-hl-line-mode 1)
   (global-auto-revert-mode 1)
-	;; (yas-global-mode 1)
   :custom
 	(vc-follow-symlinks t)
   (inhibit-startup-buffer-menu 1)
@@ -121,6 +120,7 @@
 	("C-c C-p" . backward-list)
 	("C-c C-n" . forward-list)
 	("M-m" . xref-find-apropos)
+	("C-\\" . treemacs)
   :hook (
 	 (prog-mode . display-line-numbers-mode)
 	 (prog-mode . multiple-cursors-mode)
@@ -160,11 +160,12 @@
   (helm-selection ((t (:background "gray27" :distant-foreground "white")))))
 
 (use-package org
+	:defer t
   :ensure nil
   :config
 	(defvar org-capture-templates)
 	(defvar org-agenda-timegrid-use-ampm)
-  (setq org-agenda-files '("~/RoamNotes/todo.org" "~/RoamNotes/journal/" "~/RoamNotes/projects/")
+  (setq org-agenda-files '("~/RoamNotes/todo.org")
 				org-directory "~/RoamNotes"
 				org-default-notes-file (concat org-directory "/notes.org")
 				org-agenda-timegrid-use-ampm 1
@@ -189,6 +190,7 @@
 	)
 
 (use-package org-agenda
+	:defer t
 	:ensure nil
 	:commands (org-agenda-skip-entry-if org-agenda-files)
 	:config
@@ -319,6 +321,7 @@
 	(markdown-mode . auto-fill-mode))
 
 (use-package focus
+	:defer t
 	:custom-face
 	(focus-unfocused ((t (:foreground "gray35")))))
 
@@ -332,11 +335,14 @@
 	(prog-mode . electric-pair-local-mode))
 
 (use-package eglot
+	:defer t
 	:custom
 	(eglot-events-buffer-size 0) ; if debugging, set to 2000000
 	(add-to-list 'eglot-server-programs
              '((rust-ts-mode rust-mode) .
-               ("rust-analyzer" :initializationOptions (:check (:command "clippy")))))
+               ("rust-analyzer" :initializationOptions (:check (:command "clippy"))))
+						 '((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode web-mode)
+	"typescript-language-server" "--stdio"))
 	:custom-face
 	(eglot-highlight-symbol-face ((t (:background "gray40")))))
 
@@ -382,29 +388,59 @@
 ;; keybindings
 (global-set-key (kbd "C-c p") 'pyorg)
 
-;; TODO figure out if i need this
-;; (require 'tree-sitter-langs)
-;; (global-tree-sitter-mode 1)
-;; (lsp-treemacs-sync-mode 1)
-
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
 
-;; hooks
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+(use-package treesit
+	:config
+	(setq treesit-language-source-alist
+   '((bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
+     (c . ("https://github.com/tree-sitter/tree-sitter-c"))
+     (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+     (css . ("https://github.com/tree-sitter/tree-sitter-css"))
+     (cmake . ("https://github.com/uyha/tree-sitter-cmake"))
+     (go . ("https://github.com/tree-sitter/tree-sitter-go"))
+     (html . ("https://github.com/tree-sitter/tree-sitter-html"))
+     (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.20.3"))
+     (json . ("https://github.com/tree-sitter/tree-sitter-json"))
+     (julia . ("https://github.com/tree-sitter/tree-sitter-julia"))
+     (lua . ("https://github.com/Azganoth/tree-sitter-lua"))
+     (make . ("https://github.com/alemuller/tree-sitter-make"))
+     (ocaml . ("https://github.com/tree-sitter/tree-sitter-ocaml" "master" "ocaml/src"))
+     (python . ("https://github.com/tree-sitter/tree-sitter-python"))
+     (php . ("https://github.com/tree-sitter/tree-sitter-php"))
+     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
+     (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
+     (ruby . ("https://github.com/tree-sitter/tree-sitter-ruby"))
+     (rust . ("https://github.com/tree-sitter/tree-sitter-rust"))
+     (sql . ("https://github.com/m-novikov/tree-sitter-sql"))
+     (toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
+     (zig . ("https://github.com/GrayJack/tree-sitter-zig"))))
+	)
+
+
+
 (require 'term)
 (define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
 (define-key term-raw-map (kbd "s-v") 'term-paste) ;; in use-package?
 
-(use-package typescript-mode
-  :mode ("\\.tsx\\'" "\\.ts\\'"))
-
 (use-package rjsx-mode
-  :mode ("\\.jsx\\'" "\\.js\\'"))
+  :mode ("\\.js\\'" "\\.jsx\\'"))
+
+;; (use-package typescript-mode
+;; 	:mode ("\\.ts\\'" "\\.tsx\\'"))
+
+
+(use-package typescript-ts-mode
+  :mode ("\\.ts\\'")
+	)
+
+(use-package tsx-ts-mode
+	:mode ("\\.tsx\\'")
+	)
 
 (use-package rust-mode
   :mode ("\\.rs\\'"))
-
 
 (use-package js2-mode
 	:defer t
