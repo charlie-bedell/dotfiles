@@ -14,7 +14,6 @@
  '(font-lock-function-name-face ((t (:foreground "#FFB454"))))
  '(tree-sitter-hl-face:function.macro ((t (:foreground "#FFB454"))))
  '(font-lock-string-face ((t (:foreground "#AAD94C"))))
- '(font-lock-type-face ((t (:foreground "#BFBDB6"))))
  '(font-lock-builtin-face ((t (:foreground "#FFB454"))))
  '(font-lock-type-face ((t (:foreground "PaleGreen3"))))
  '(font-lock-regexp-grouping-construct ((t (:foreground "#95E6CB"))))

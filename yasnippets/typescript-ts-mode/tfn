@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: tsComponentFunction
+# key: tfn
+# --
+
+interface $1Props {
+   	 // declare props here
+}
+
+const ${1:Component}: React.FC<$1Props> = ({/* Destructure Props Here */}) => {
+  return (
+	  <div>
+		    $0
+		</div>
+	)
+}
+
+export default $1;
