@@ -307,6 +307,20 @@
 	:custom
 	(setq-default flycheck-disabled-checkers '(python-flake8 python-pylint)))
 
+;; speeds up initial flycheck
+(with-eval-after-load 'flycheck
+  (advice-add 'flycheck-eslint-config-exists-p :override (lambda() t)))
+
+;; so a couple things: node versions are managed with nvm
+
+;; eslint is downloaded into the current node version (at the time writing this)
+;; that version is v20.10.0, which is managed by nvm
+
+;; since the -i (interactive) flag has been removed from (exec-path-from-shell),
+;; emacs will inherit path variables from .zshenv... since .zshenv doesn't have
+;; nvm, the node version needs to be set manually.
+
+
 (use-package yasnippet
 	;; use [TAB] or C-i to expand snippets
 	:commands (yas-reload-all)
