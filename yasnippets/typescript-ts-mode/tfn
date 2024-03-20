@@ -2,15 +2,16 @@
 # name: tsComponentFunction
 # key: tfn
 # --
+import React from 'react';
 
 interface $1Props {
-   	 // declare props here
+		 // declare props here
 }
 
 const ${1:Component}: React.FC<$1Props> = ({/* Destructure Props Here */}) => {
-  return (
-	  <div>
-		    $0
+	return (
+		<div>
+			$0
 		</div>
 	)
 }

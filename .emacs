@@ -4,6 +4,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(eglot-ignored-server-capabilities '(:inlayHintProvider) nil nil "Customized with use-package eglot")
+ '(exec-path-from-shell-arguments '("-l"))
+ '(flycheck-checker-error-threshold 400)
  '(package-selected-packages
 	 '(lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy treemacs yaml-mode use-package typescript-mode terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
 (custom-set-faces
@@ -42,6 +44,9 @@
 ;; and `package-pinned-packages`. Most users will not need or want to do this.
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 (require 'indicators)
 (defun efs/display-startup-time ()
@@ -126,7 +131,6 @@
 	 (prog-mode . multiple-cursors-mode)
 	 (prog-mode . column-number-mode)
 	 (prog-mode . display-fill-column-indicator-mode)
-	 (prog-mode . global-flycheck-mode)
 	 (prog-mode . global-company-mode)))
 
 (use-package python
@@ -158,6 +162,15 @@
   (helm-ff-directory ((t (:extend t :foreground "DeepSkyBlue1" :background unspecified))))
   (helm-ff-file ((t (:foreground "lightgrey"))))
   (helm-selection ((t (:background "gray27" :distant-foreground "white")))))
+
+(use-package ivy
+	:commands (ivy-mode)
+  :ensure t
+  :init
+  (ivy-mode 1)
+  :custom
+  (ivy-height 15)
+  (ivy-count-format "(%d/%d)"))
 
 (use-package org
 	:defer t
@@ -249,14 +262,6 @@
 	:bind-keymap
 	("C-c n d" . org-roam-dailies-map))
 
-(use-package ivy
-  :ensure t
-  :init
-  (ivy-mode 1)
-  :custom
-  (ivy-height 15)
-  (ivy-count-format "(%d/%d)"))
-
 (use-package term
 	:commands (term-set-escape-char term-mode term-char-mode pb-copy)
   :config
@@ -297,6 +302,8 @@
 	)
 
 (use-package flycheck
+	:ensure t
+	:init (global-flycheck-mode)
 	:custom
 	(setq-default flycheck-disabled-checkers '(python-flake8 python-pylint)))
 
