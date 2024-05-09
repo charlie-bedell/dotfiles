@@ -99,6 +99,8 @@
   (global-hl-line-mode 1)
   (global-auto-revert-mode 1)
   :custom
+	(load (expand-file-name "~/.quicklisp/slime-helper.el"))
+	(inferior-lisp-program "sbcl")
 	(vc-follow-symlinks t)
   (inhibit-startup-buffer-menu 1)
   (inhibit-startup-screen 1)
@@ -439,7 +441,7 @@
      (zig . ("https://github.com/GrayJack/tree-sitter-zig"))))
 	)
 
-
+(use-package slime)
 
 (require 'term)
 (define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
