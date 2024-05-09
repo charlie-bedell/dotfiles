@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: tsdocstring
+# key: ds
+# --
+
+/**
+* $0
+**/
