@@ -4,5 +4,9 @@
 # --
 
 useEffect(() => {
-	$0
+	const ${1:function} = async () => {
+	// fetch data and set it to state here
+				$0
+	};
+	$1();
 }, []);
