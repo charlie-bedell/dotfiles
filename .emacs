@@ -364,7 +364,7 @@
 	(add-to-list 'eglot-server-programs
              '((rust-ts-mode rust-mode) .
                ("rust-analyzer" :initializationOptions (:check (:command "clippy"))))
-						 '((js-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode web-mode)
+						 '((rjsx-mode js-mode js2-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode web-mode)
 	"typescript-language-server" "--stdio"))
 	:custom-face
 	(eglot-highlight-symbol-face ((t (:background "gray40")))))
@@ -486,6 +486,9 @@
 	(web-mode-enable-current-element-highlight t)
 	(web-mode-markup-indent-offset 2)
 	(web-mode-auto-close-style 2))
+
+(use-package json-mode
+	:mode ("\\.cjs'" "\\.json'"))
 
 (setq org-confirm-babel-evaluate nil)
 
