@@ -6,6 +6,7 @@
  '(eglot-ignored-server-capabilities '(:inlayHintProvider) nil nil "Customized with use-package eglot")
  '(exec-path-from-shell-arguments '("-l"))
  '(flycheck-checker-error-threshold 400)
+ '(js2-strict-missing-semi-warning nil)
  '(package-selected-packages
 	 '(lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy treemacs yaml-mode use-package typescript-mode terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
 (custom-set-faces
@@ -415,6 +416,7 @@
   (exec-path-from-shell-initialize))
 
 (use-package treesit
+	;; use m-x treesit-install-language-grammar
 	:config
 	(setq treesit-language-source-alist
    '((bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
@@ -450,6 +452,16 @@
 (use-package rjsx-mode
   :mode ("\\.js\\'" "\\.jsx\\'"))
 
+(use-package js2-mode
+	:defer t
+	:config
+	(setq js-indent-level 2)
+	(setq js2-basic-offset 2)
+	:bind
+	(:map js2-mode-map
+				("M-." . nil))
+	:mode ("\\.js\\'"))
+
 ;; (use-package typescript-mode
 ;; 	:mode ("\\.ts\\'" "\\.tsx\\'"))
 
@@ -465,14 +477,8 @@
 (use-package rust-mode
   :mode ("\\.rs\\'"))
 
-(use-package js2-mode
-	:defer t
-	:config
-	(setq js-indent-level 2)
-	(setq js2-basic-offset 2)
-	:bind
-	(:map js2-mode-map
-				("M-." . nil)))
+(use-package c-ts-mode
+	:mode ("\\.c\\'"))
 
 (use-package conf-mode
   :mode ("\\.*rc\\'"))
