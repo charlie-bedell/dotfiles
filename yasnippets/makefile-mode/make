@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: simplemake
+# key: make
+# --
+
+${1:filename}: ${1}.c
+\$(CC) ${1}.c -o ${1} -Wall -Wextra -pedantic -std=c99
