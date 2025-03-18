@@ -3,12 +3,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-idle-delay 0)
+ '(company-minimum-prefix-length 2)
+ '(custom-safe-themes
  '(eglot-ignored-server-capabilities '(:inlayHintProvider) nil nil "Customized with use-package eglot")
  '(exec-path-from-shell-arguments '("-l"))
  '(flycheck-checker-error-threshold 400)
  '(js2-strict-missing-semi-warning nil)
  '(package-selected-packages
-	 '(lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy treemacs yaml-mode use-package typescript-mode terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
+	 '(vlf lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy treemacs yaml-mode use-package typescript-mode terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -52,17 +55,17 @@
 (require 'indicators)
 (defun efs/display-startup-time ()
   (message "Emacs loaded in %s with %d garbage collections."
-		   (format "%.2f seconds"
-				   (float-time
-		    (time-subtract after-init-time before-init-time)))
-	   gcs-done))
+					 (format "%.2f seconds"
+									 (float-time
+										(time-subtract after-init-time before-init-time)))
+					 gcs-done))
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
 ;; load custom ayu-dark theme, else load tango-dark
- (add-to-list 'custom-theme-load-path "~/dotfiles/")
- (if (file-exists-p "~/dotfiles/ayu-dark-theme.el")
-     (load-theme 'ayu-dark t)
-   (load-theme 'tango-dark t))
+(add-to-list 'custom-theme-load-path "~/dotfiles/")
+(if (file-exists-p "~/dotfiles/ayu-dark-theme.el")
+    (load-theme 'ayu-dark t)
+  (load-theme 'tango-dark t))
 
 ;; insert a python code block into an org file
 (defun pyorg ()
@@ -85,7 +88,7 @@
 	(scroll-down arg))
 
 (use-package use-package
-    :custom
+  :custom
   (use-package-always-pin "nongnu"))
 
 ;; M-x describe-personal-keybindings to see all your keybinds
@@ -116,10 +119,12 @@
   (global-auto-revert-non-file-buffers t)
 	(gc-cons-threshold 10000000)
   :bind
+  :bind*
   ("C-c C-s" . replace-string)
   ("C-;" . comment-or-uncomment-region)
   ("C-a" . crux-move-beginning-of-line)
 	("C-s" . swiper)
+	("C-r" . replace-string)
 	("C-v" . (lambda () (interactive) (scroll-up-by 5)))
 	("M-v" . (lambda () (interactive) (scroll-down-by 5)))
 	("M-," . xref-go-back)
@@ -130,11 +135,11 @@
 	("M-m" . xref-find-apropos)
 	("C-\\" . treemacs)
   :hook (
-	 (prog-mode . display-line-numbers-mode)
-	 (prog-mode . multiple-cursors-mode)
-	 (prog-mode . column-number-mode)
-	 (prog-mode . display-fill-column-indicator-mode)
-	 (prog-mode . global-company-mode)))
+				 (prog-mode . display-line-numbers-mode)
+				 (prog-mode . multiple-cursors-mode)
+				 (prog-mode . column-number-mode)
+				 (prog-mode . display-fill-column-indicator-mode)
+				 (prog-mode . global-company-mode)))
 
 (use-package python
   :hook (python-mode . my-python-mode-setup)
@@ -215,8 +220,8 @@
 					("ca" "todo and waiting entries across all of roamNotes" agenda "TODO|WAITING"
 					 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo '("TODO" "WAITING")))
 						(org-agenda-files (file-expand-wildcards "~/RoamNotes/*.org"))))
-				("ct" "list all todos" todo ""
-				 ((org-agenda-files (file-expand-wildcard "~/RoamNotes/*.org")))))))
+					("ct" "list all todos" todo ""
+					 ((org-agenda-files (file-expand-wildcard "~/RoamNotes/*.org")))))))
 
 (use-package org-roam
 	:defer t
@@ -308,7 +313,8 @@
 	:ensure t
 	:init (global-flycheck-mode)
 	:custom
-	(setq-default flycheck-disabled-checkers '(python-flake8 python-pylint)))
+	(setq-default flycheck-disabled-checkers '(python-flake8 python-pylint))
+	(flycheck-add-mode 'javascript-eslint 'web-mode))
 
 ;; speeds up initial flycheck
 (with-eval-after-load 'flycheck
@@ -363,10 +369,10 @@
 	:custom
 	(eglot-events-buffer-size 0) ; if debugging, set to 2000000
 	(add-to-list 'eglot-server-programs
-             '((rust-ts-mode rust-mode) .
-               ("rust-analyzer" :initializationOptions (:check (:command "clippy"))))
-						 '((rjsx-mode js-mode js2-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode web-mode)
-	"typescript-language-server" "--stdio"))
+							 '((rust-ts-mode rust-mode) .
+								 ("rust-analyzer" :initializationOptions (:check (:command "clippy"))))
+							 '((rjsx-mode js-mode js2-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode web-mode)
+								 "typescript-language-server" "--stdio"))
 	:custom-face
 	(eglot-highlight-symbol-face ((t (:background "gray40")))))
 
@@ -419,28 +425,28 @@
 	;; use m-x treesit-install-language-grammar
 	:config
 	(setq treesit-language-source-alist
-   '((bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
-     (c . ("https://github.com/tree-sitter/tree-sitter-c"))
-     (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
-     (css . ("https://github.com/tree-sitter/tree-sitter-css"))
-     (cmake . ("https://github.com/uyha/tree-sitter-cmake"))
-     (go . ("https://github.com/tree-sitter/tree-sitter-go"))
-     (html . ("https://github.com/tree-sitter/tree-sitter-html"))
-     (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.20.3"))
-     (json . ("https://github.com/tree-sitter/tree-sitter-json"))
-     (julia . ("https://github.com/tree-sitter/tree-sitter-julia"))
-     (lua . ("https://github.com/Azganoth/tree-sitter-lua"))
-     (make . ("https://github.com/alemuller/tree-sitter-make"))
-     (ocaml . ("https://github.com/tree-sitter/tree-sitter-ocaml" "master" "ocaml/src"))
-     (python . ("https://github.com/tree-sitter/tree-sitter-python"))
-     (php . ("https://github.com/tree-sitter/tree-sitter-php"))
-     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
-     (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
-     (ruby . ("https://github.com/tree-sitter/tree-sitter-ruby"))
-     (rust . ("https://github.com/tree-sitter/tree-sitter-rust"))
-     (sql . ("https://github.com/m-novikov/tree-sitter-sql"))
-     (toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
-     (zig . ("https://github.com/GrayJack/tree-sitter-zig"))))
+				'((bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
+					(c . ("https://github.com/tree-sitter/tree-sitter-c"))
+					(cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+					(css . ("https://github.com/tree-sitter/tree-sitter-css"))
+					(cmake . ("https://github.com/uyha/tree-sitter-cmake"))
+					(go . ("https://github.com/tree-sitter/tree-sitter-go"))
+					(html . ("https://github.com/tree-sitter/tree-sitter-html"))
+					(javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.20.3"))
+					(json . ("https://github.com/tree-sitter/tree-sitter-json"))
+					(julia . ("https://github.com/tree-sitter/tree-sitter-julia"))
+					(lua . ("https://github.com/Azganoth/tree-sitter-lua"))
+					(make . ("https://github.com/alemuller/tree-sitter-make"))
+					(ocaml . ("https://github.com/tree-sitter/tree-sitter-ocaml" "master" "ocaml/src"))
+					(python . ("https://github.com/tree-sitter/tree-sitter-python"))
+					(php . ("https://github.com/tree-sitter/tree-sitter-php"))
+					(typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
+					(tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
+					(ruby . ("https://github.com/tree-sitter/tree-sitter-ruby"))
+					(rust . ("https://github.com/tree-sitter/tree-sitter-rust"))
+					(sql . ("https://github.com/m-novikov/tree-sitter-sql"))
+					(toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
+					(zig . ("https://github.com/GrayJack/tree-sitter-zig"))))
 	)
 
 (use-package slime)
@@ -449,18 +455,22 @@
 (define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
 (define-key term-raw-map (kbd "s-v") 'term-paste) ;; in use-package?
 
-(use-package rjsx-mode
+(use-package js-ts-mode
+	:bind
+	("M-," . xref-go-back)
+	("M-." . xref-find-definitions)
+	("M-/" . xref-find-references)
   :mode ("\\.js\\'" "\\.jsx\\'"))
 
-(use-package js2-mode
-	:defer t
-	:config
-	(setq js-indent-level 2)
-	(setq js2-basic-offset 2)
-	:bind
-	(:map js2-mode-map
-				("M-." . nil))
-	:mode ("\\.js\\'"))
+;; (use-package js2-mode
+;; 	:defer t
+;; 	:config
+;; 	(setq js-indent-level 2)
+;; 	(setq js2-basic-offset 2)
+;; 	:bind
+;; 	(:map js2-mode-map
+;; 				("M-." . nil))
+;; 	:mode ("\\.js\\'"))
 
 ;; (use-package typescript-mode
 ;; 	:mode ("\\.ts\\'" "\\.tsx\\'"))
@@ -473,6 +483,10 @@
 (use-package tsx-ts-mode
 	:mode ("\\.tsx\\'")
 	)
+
+;; python-ts-mode sucks
+(use-package python-mode
+	:mode ("\\.py\\'"))
 
 (use-package rust-mode
   :mode ("\\.rs\\'"))
@@ -487,7 +501,7 @@
   :mode ("\\.*fish\\'"))
 
 (use-package web-mode
-	:mode ("\\.*html\\'")
+	:mode ("\\.*html\\'" "\\.*php\\'")
 	:custom
 	(web-mode-enable-current-element-highlight t)
 	(web-mode-markup-indent-offset 2)
