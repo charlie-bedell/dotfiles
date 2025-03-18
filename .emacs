@@ -12,10 +12,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-	 '("4f8dce32da76340dd5ea39890fd63bed06b444f3bb55cd66aa4e6d465721f88a" default))
  '(company-idle-delay 0)
  '(company-minimum-prefix-length 2)
+ '(custom-safe-themes
+	 '("4f8dce32da76340dd5ea39890fd63bed06b444f3bb55cd66aa4e6d465721f88a" default))
  '(eglot-ignored-server-capabilities '(:inlayHintProvider) nil nil "Customized with use-package eglot")
  '(exec-path-from-shell-arguments '("-l"))
  '(flycheck-checker-error-threshold 400)
@@ -28,7 +28,7 @@
 		 (file . find-file)
 		 (wl . wl-other-frame)))
  '(package-selected-packages
-	 '(glsl-mode corfu lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy treemacs yaml-mode use-package typescript-mode terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html vlf)))
+	 '(ivy swiper glsl-mode corfu lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm treemacs yaml-mode use-package typescript-mode terraform-mode solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html vlf)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -366,7 +366,7 @@
 	:custom
 	(setq flycheck-clang-include-path '("include"))
 	(setq-default flycheck-disabled-checkers '(python-flake8 python-pylint))
-	(flycheck-add-mode 'javascript-eslint 'web-mode)))
+	(flycheck-add-mode 'javascript-eslint 'web-mode))
 
 ;; speeds up initial flycheck
 (with-eval-after-load 'flycheck
