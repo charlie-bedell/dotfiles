@@ -1,14 +1,32 @@
+;;; package --- Summary
+;; emacs config
+
+;;; Commentary:
+;; constant wip, a lot of stuff is commented out to keep as reference
+;; the first big block of commented code is kept there to help debugging
+
+
+;;; Code:
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+	 '("4f8dce32da76340dd5ea39890fd63bed06b444f3bb55cd66aa4e6d465721f88a" default))
  '(eglot-ignored-server-capabilities '(:inlayHintProvider) nil nil "Customized with use-package eglot")
  '(exec-path-from-shell-arguments '("-l"))
  '(flycheck-checker-error-threshold 400)
  '(js2-strict-missing-semi-warning nil)
+ '(org-babel-load-languages '((emacs-lisp . t) (shell . t) (python . t) (C . t)))
+ '(org-link-frame-setup
+	 '((vm . vm-visit-folder-other-frame)
+		 (vm-imap . vm-visit-imap-folder-other-frame)
+		 (gnus . org-gnus-no-new-news)
+		 (file . find-file)
+		 (wl . wl-other-frame)))
  '(package-selected-packages
-	 '(lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy treemacs yaml-mode use-package typescript-mode terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
+	 '(glsl-mode corfu lsp-pyright pyenv-mode yasnippet nil vterm flycheck-rust web-mode markdown-mode yaml ace-window helm ivy treemacs yaml-mode use-package typescript-mode terraform-mode swiper solo-jazz-theme smart-tab slime rust-mode rjsx-mode rainbow-mode org-roam nano-theme nano-modeline multiple-cursors modus-themes magit json-mode indicators focus flymd flycheck fish-mode exec-path-from-shell esup elisp-format doom-themes dockerfile-mode devdocs crux company-lua cider ac-html)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -96,10 +114,13 @@
 	(menu-bar-mode t)
   (tool-bar-mode 0)
   (scroll-bar-mode 0)
+	(winner-mode 1)
   (delete-selection-mode 1)
   (global-hl-line-mode 1)
   (global-auto-revert-mode 1)
+	(blink-cursor-mode 0)
   :custom
+	(confirm-kill-emacs 'y-or-n-p)
 	(load (expand-file-name "~/.quicklisp/slime-helper.el"))
 	(inferior-lisp-program "sbcl")
 	(vc-follow-symlinks t)
@@ -116,7 +137,7 @@
   (global-auto-revert-non-file-buffers t)
 	(gc-cons-threshold 10000000)
   :bind
-  ("C-c C-s" . replace-string)
+  ("C-r" . replace-string)
   ("C-;" . comment-or-uncomment-region)
   ("C-a" . crux-move-beginning-of-line)
 	("C-s" . swiper)
@@ -138,11 +159,15 @@
 
 (use-package python
   :hook (python-mode . my-python-mode-setup)
+	:custom
+	(setq standard-indent 4)
   :config
-	(setq-local python-indent-offset 4)
+	(setq python-indent-offset 4)
   (defun my-python-mode-setup ()
+		(interactive)
     (setq-local flycheck-disabled-checkers '(python-pylint python-flake8))
-		(setq-local python-indent-offset 4)))
+		(setq-local python-indent-offset 4))
+	(my-python-mode-setup))
 
 (use-package helm
 	:custom
@@ -298,7 +323,9 @@
 			(delete-region (region-beginning) (region-end)))
 		(global-set-key (kbd "M-w") 'pbcopy)
 		(global-set-key (kbd "C-y") 'pbpaste)
-		(global-set-key (kbd "C-w") 'pbcut))
+		(global-set-key (kbd "C-w") 'pbcut)
+		;; (global-set-key (kbd "C-c C-c") 'term-interrupt-subjob)
+		)
   :custom-face
   (term-color-blue ((t (:foreground "cyan2" :background "cyan2"))))
 	(term-color-cyan ((t (:foreground "DeepSkyblue1" :background "DeepSkyblue1"))))
@@ -306,8 +333,34 @@
 
 (use-package flycheck
 	:ensure t
+	:preface
+  (defun mp-flycheck-eldoc (callback &rest _ignored)
+    "Print flycheck messages at point by calling CALLBACK."
+    (when-let ((flycheck-errors (and flycheck-mode (flycheck-overlay-errors-at (point)))))
+      (mapc
+       (lambda (err)
+         (funcall callback
+									(format "%s: %s"
+													(let ((level (flycheck-error-level err)))
+														(pcase level
+															('info (propertize "I" 'face 'flycheck-error-list-info))
+															('error (propertize "E" 'face 'flycheck-error-list-error))
+															('warning (propertize "W" 'face 'flycheck-error-list-warning))
+															(_ level)))
+													(flycheck-error-message err))
+									:thing (or (flycheck-error-id err)
+														 (flycheck-error-group err))
+									:face 'font-lock-doc-face))
+       flycheck-errors)))
+	(defun mp-flycheck-prefer-eldoc ()
+    (add-hook 'eldoc-documentation-functions #'mp-flycheck-eldoc nil t)
+    (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly)
+    (setq flycheck-display-errors-function nil)
+    (setq flycheck-help-echo-function nil))
 	:init (global-flycheck-mode)
+	:hook ((flycheck-mode . mp-flycheck-prefer-eldoc))
 	:custom
+	(setq flycheck-clang-include-path '("include"))
 	(setq-default flycheck-disabled-checkers '(python-flake8 python-pylint)))
 
 ;; speeds up initial flycheck
@@ -323,6 +376,15 @@
 ;; emacs will inherit path variables from .zshenv... since .zshenv doesn't have
 ;; nvm, the node version needs to be set manually.
 
+
+(use-package eldoc
+  :preface
+   (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly)
+   :config
+	 ;; (eldoc-add-command-completions "paredit-")
+   ;; (eldoc-add-command-completions "combobulate-")
+	(setq eldoc-idle-delay 0.2)
+	)
 
 (use-package yasnippet
 	;; use [TAB] or C-i to expand snippets
@@ -366,7 +428,9 @@
              '((rust-ts-mode rust-mode) .
                ("rust-analyzer" :initializationOptions (:check (:command "clippy"))))
 						 '((rjsx-mode js-mode js2-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode web-mode)
-	"typescript-language-server" "--stdio"))
+							 "typescript-language-server" "--stdio")
+						 '((c-mode c-ts-mode c++-mode c++-ts-mode) "clangd" "-I/include/")
+						 )
 	:custom-face
 	(eglot-highlight-symbol-face ((t (:background "gray40")))))
 
@@ -381,8 +445,6 @@
 ;; 	:custom
 ;; 	(gc-cons-threshold 10000000)
 ;; 	(read-process-output-max (* 1024 1024))
-;; 	(company-idle-delay 0.2)
-;; 	(company-minimum-prefix-length 1)
 ;; 	(lsp-idle-delay 0.5)
 ;; 	(lsp-log-io nil) ; if set to true can cause performance hit
 ;; 	(lsp-ui-doc-show-with-mouse nil)
@@ -412,8 +474,8 @@
 ;; keybindings
 (global-set-key (kbd "C-c p") 'pyorg)
 
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
+;; (when (memq window-system '(mac ns x))
+;;   (exec-path-from-shell-initialize))
 
 (use-package treesit
 	;; use m-x treesit-install-language-grammar
@@ -442,6 +504,11 @@
      (toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
      (zig . ("https://github.com/GrayJack/tree-sitter-zig"))))
 	)
+
+(use-package company
+	:config
+	(setq company-idle-delay 0)
+	(setq company-minimum-prefix-length 1))
 
 (use-package slime)
 
@@ -478,7 +545,31 @@
   :mode ("\\.rs\\'"))
 
 (use-package c-ts-mode
-	:mode ("\\.c\\'"))
+	:mode ("\\.c\\'" "\\.h\\'")
+	;; not working currently, need to revisit
+	;; possible error is that man returns a buffer, not a string
+	;; :preface
+	;; (defun my-c-eldoc-function (callback &rest _ignored)
+  ;;   "Returns a doc string appropriate for the current context, or nil."
+	;; 	(man (symbol-at-point)))
+	;; (defun my-c-prefer-eldoc ()
+  ;; (add-hook 'eldoc-documentation-functions #'my-c-eldoc-function nil t)
+  ;;   (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly)
+  ;;   (setq flycheck-display-errors-function nil)
+  ;;   (setq flycheck-help-echo-function nil))
+	;; :hook
+	;; ((c-ts-mode . my-c-prefer-eldoc))
+	;; :config
+	;; (set (make-local-variable 'eldoc-documentation-function) 'c-eldoc-function)
+	)
+
+(use-package c++-ts-mode
+	:mode ("\\.cpp\\'")
+	)
+
+;; (use-package cmake-ts-mode
+;; 	:mode ("\\(?:CmakeLists.txt\\'")
+;; 	)
 
 (use-package conf-mode
   :mode ("\\.*rc\\'"))
@@ -496,6 +587,9 @@
 (use-package json-mode
 	:mode ("\\.cjs'" "\\.json'"))
 
+(use-package glsl-mode
+	:mode ("\\.vs\\'" "\\.fs\\'"))
+
 (setq org-confirm-babel-evaluate nil)
 
 (org-babel-do-load-languages
@@ -508,4 +602,5 @@
 (setq backup-directory-alist '(("." . "./.~")))
 
 (provide '.emacs)
+
 ;;; .emacs ends here

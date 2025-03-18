@@ -21,6 +21,7 @@ yabai -m space 10 --label ten
 
 # allow yabai to manage emacs
 yabai -m rule --add app=Emacs manage=on
+yabai -m rule --add title="^noyabai.*" manage=off
 # see GH for config options
 # https://github.com/koekeishiya/yabai/blob/master/doc/yabai.asciidoc#config
 yabai -m config                            \
@@ -41,3 +42,4 @@ yabai -m config                            \
 			window_opacity                    on \
 			active_window_opacity            1.0 \
 			normal_window_opacity            0.9 \
+

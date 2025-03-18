@@ -100,7 +100,6 @@ plugins=(git zsh-syntax-highlighting)
 alias python="python3"
 alias -s py=python3
 alias tf='terraform'
-alias http-local='http-server -c-1 -p 8080'
 alias pm='python3 manage.py'
 # load nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"

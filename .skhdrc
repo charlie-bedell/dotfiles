@@ -14,8 +14,9 @@ cmd - l : yabai -m window --focus east
 cmd - r : yabai -m space --rotate 90
 
 # close window
-cmd - q : yabai -m window --close
-
+# cmd - q : yabai -m query --windows --window | jq -r '.app' | grep -qE "Terminal|Alacritty|iTerm2" || yabai -m window --close
+# cmd - q : [ "$(yabai -m query --windows --window | jq -r '.app')" != "iTerm2" ] && yabai -m window --close
+cmd - q : [ "$(yabai -m query --windows --window | grep -o '"app":"[^"]*"' | awk -F':' '{gsub(/"/, "", $2); print $2}')" != "iTerm2" ] && yabai -m window --close
 # toggle fullscreen
 cmd - f : yabai -m window --toggle zoom-fullscreen
 
