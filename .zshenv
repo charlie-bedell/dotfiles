@@ -1,2 +1,2 @@
-NODE_VERSION="v20.10.0"
-export PATH="/usr/local/opt/postgresql@16/bin:/Users/charlesbedell/.nvm/versions/node/$NODE_VERSION/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/charlesbedell/.cargo/bin"
+# NODE_VERSION="v20.10.0"
+# export PATH="/usr/local/opt/postgresql@16/bin:/Users/charlesbedell/.nvm/versions/node/$NODE_VERSION/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/charlesbedell/.cargo/bin"
