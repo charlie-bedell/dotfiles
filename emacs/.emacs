@@ -21,6 +21,7 @@
  '(flycheck-checker-error-threshold 400)
  '(js2-strict-missing-semi-warning nil)
  '(org-babel-load-languages '((emacs-lisp . t) (shell . t) (python . t) (C . t)))
+ '(org-ctrl-k-protect-subtree 'error)
  '(org-link-frame-setup
 	 '((vm . vm-visit-folder-other-frame)
 		 (vm-imap . vm-visit-imap-folder-other-frame) (gnus . org-gnus-no-new-news)
@@ -186,7 +187,7 @@
 	(helm-full-frame nil)
 	(helm-buffer-in-new-frame-p nil)
 	(helm-split-window-inside-p t)
-	(helm-buffers-truncate-lines t)
+	(helm-buffers-truncate-lines nil)
 	(helm-mini-default-sources '(helm-source-buffers-list helm-source-recentf))
 	(helm-boring-file-regexp-list '("\\~$" "[#]*[#]" "\\#*\\#"))
 	(helm-ff-skip-boring-files t)
@@ -560,7 +561,6 @@
 ;; (use-package typescript-mode
 ;; 	:mode ("\\.ts\\'" "\\.tsx\\'"))
 
-
 (use-package typescript-ts-mode
   :mode ("\\.ts\\'")
 	)
@@ -635,4 +635,4 @@
 
 (provide '.emacs)
 
-;;; .emacs ends here
+=;;; .emacs ends here
