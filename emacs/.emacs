@@ -635,4 +635,4 @@
 
 (provide '.emacs)
 
-=;;; .emacs ends here
+;;; .emacs ends here
