@@ -24,17 +24,12 @@
  '(org-ctrl-k-protect-subtree 'error)
  '(org-link-frame-setup
 	 '((vm . vm-visit-folder-other-frame)
-		 (vm-imap . vm-visit-imap-folder-other-frame) (gnus . org-gnus-no-new-news)
-		 (file . find-file) (wl . wl-other-frame)))
+		 (vm-imap . vm-visit-imap-folder-other-frame)
+		 (gnus . org-gnus-no-new-news)
+		 (file . find-file)
+		 (wl . wl-other-frame)))
  '(package-selected-packages
-	 '(ac-html ace-window cider company-lua corfu crux devdocs dockerfile-mode
-						 doom-themes elisp-format esup exec-path-from-shell fish-mode
-						 flycheck flycheck-rust flymd focus glsl-mode helm indicators ivy
-						 json-mode lsp-pyright magit markdown-mode modus-themes
-						 multiple-cursors nano-modeline nano-theme nil org-roam pyenv-mode
-						 rainbow-mode rjsx-mode rust-mode slime smart-tab solo-jazz-theme
-						 swiper terraform-mode treemacs typescript-mode use-package vlf
-						 vterm web-mode yaml yaml-mode yasnippet)))
+	 '(eglot ac-html ace-window cider company-lua corfu crux devdocs dockerfile-mode doom-themes elisp-format esup exec-path-from-shell fish-mode flycheck flycheck-rust flymd focus glsl-mode helm indicators ivy json-mode lsp-pyright magit markdown-mode modus-themes Multiple-cursors nano-modeline nano-theme nil org-roam pyenv-mode rainbow-mode rjsx-mode rust-mode slime smart-tab solo-jazz-theme swiper terraform-mode treemacs typescript-mode use-package vlf vterm web-mode yaml yaml-mode yasnippet)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -128,6 +123,7 @@
   (global-hl-line-mode 1)
   (global-auto-revert-mode 1)
 	(blink-cursor-mode 0)
+	(add-to-list 'exec-path "/opt/homebrew/bin")
   :custom
 	(confirm-kill-emacs 'y-or-n-p)
 	(load (expand-file-name "~/.quicklisp/slime-helper.el"))
@@ -135,13 +131,12 @@
 	(vc-follow-symlinks t)
   (inhibit-startup-buffer-menu 1)
   (inhibit-startup-screen 1)
-  (add-to-list 'exec-path "~/.nvm/version/node/v19.7.0/bin/")
+  ;; (add-to-list 'exec-path "~/.nvm/version/node/v20.15.1/bin/") doesnt include in exec-path? must be in :config
   (fringe-mode 8)
   (fill-column 80)
   (tab-width 2)
   (scroll-step 1)
 	(scroll-conservatively 200)
-  (exec-path (append exec-path '("/usr/local/bin")))
   (ring-bell-function 'ignore)
   (global-auto-revert-non-file-buffers t)
 	(gc-cons-threshold 10000000)
@@ -151,6 +146,7 @@
   ("C-a" . crux-move-beginning-of-line)
 	("C-s" . swiper)
 	("C-r" . replace-string)
+	("C-j" . avy-goto-char)
 	("C-v" . (lambda () (interactive) (scroll-up-by 5)))
 	("M-v" . (lambda () (interactive) (scroll-down-by 5)))
 	("M-," . xref-go-back)
@@ -168,16 +164,19 @@
 				 (prog-mode . global-company-mode)))
 
 (use-package python
-  :hook (python-mode . my-python-mode-setup)
-	:custom
-	(setq standard-indent 4)
+  :hook ((python-mode . my-python-mode-setup))
   :config
 	(setq python-indent-offset 4)
   (defun my-python-mode-setup ()
 		(interactive)
     (setq-local flycheck-disabled-checkers '(python-pylint python-flake8))
 		(setq-local python-indent-offset 4))
-	(my-python-mode-setup))
+	)
+
+(defun my-python-recompile-key ()
+  (local-set-key (kbd "C-x C-e") #'recompile))
+
+(add-hook 'python-mode-hook #'my-python-recompile-key)
 
 (use-package helm
 	:custom
@@ -449,13 +448,15 @@
 (use-package eglot
 	:ensure t
 	:custom
-	(eglot-events-buffer-size 2000000) ; if debugging, set to 2000000
+	(eglot-events-buffer-size 0) ; if debugging, set to 2000000
 	:config
 	(add-to-list 'eglot-server-programs '((rust-ts-mode rust-mode) .
 																				("rust-analyzer" :initializationOptions (:check (:command "clippy")))))
 	(add-to-list 'eglot-server-programs '((rjsx-mode js-mode js2-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode web-mode)
 																				"typescript-language-server" "--stdio"))
 	(add-to-list 'eglot-server-programs '((c-mode c-ts-mode c++-mode c++-ts-mode) "clangd"))
+	(add-to-list 'eglot-server-programs
+             '(csharp-mode . ("csharp-ls" "--solution" "affinity.slnx")))
 	:custom-face
 	(eglot-highlight-symbol-face ((t (:background "gray40")))))
 
@@ -565,16 +566,35 @@
   :mode ("\\.ts\\'")
 	)
 
+;; tramp
+(add-to-list 'tramp-connection-properties
+						 (list (regexp-quote "/ssh:cbedell@172.24.32.12:/project/cityvet/")
+									 "remote-shell" "/bin/bash"))
+(customize-set-variable 'tramp-default-user "cbedell")
+
 (use-package tsx-ts-mode
 	:mode ("\\.tsx\\'")
 	)
 
+(use-package xml-mode
+	:mode ("\\.csproj\\'")
+	)
+
 ;; python-ts-mode sucks
-(use-package python-mode
-	:mode ("\\.py\\'"))
+;; do I need this? python mode is python not python-mode
+;; see use-package python
+;; (use-package python-mode
+;; 	:mode ("\\.py\\'" . python-mode)
+;; 	:bind
+;; 	(:map python-mode-map
+;; 				("C-x C-e" . recompile))
+;; 	)
 
 (use-package rust-mode
-  :mode ("\\.rs\\'"))
+  :mode ("\\.rs\\'")
+	:bind
+	(:map rust-mode-map
+				("C-x C-e" . recompile)))
 
 (use-package c-ts-mode
 	:mode ("\\.c\\'" "\\.h\\'")
