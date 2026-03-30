@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: typescriptComponentFunction
+# key: tfn
+# --
+
+interface $3 {
+
+};
+
+const ${1:Component} = ({ ${2:props} }: ${3:type}) => {
+
+	return (
+		<${4:div}>
+			$0
+		</$4>
+	);
+};
+
+export default $1;
