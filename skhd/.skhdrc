@@ -1,6 +1,6 @@
 # launch apps
 cmd - return : /Applications/iTerm.app/Contents/MacOS/iTerm2 --single-instance -d ~
-cmd - w : /Applications/Firefox.app/Contents/MacOS/firefox
+cmd - w : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome
 cmd - e : /Applications/Emacs.app/Contents/MacOs/Emacs
 
 # focus windows
