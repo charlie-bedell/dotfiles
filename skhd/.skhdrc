@@ -1,7 +1,7 @@
 # launch apps
 cmd - return : /Applications/iTerm.app/Contents/MacOS/iTerm2 --single-instance -d ~
 cmd - w : /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome
-cmd - e : /Applications/Emacs.app/Contents/MacOs/Emacs
+cmd - e : open -na /Applications/Emacs.app
 
 # focus windows
 cmd - n : yabai -m window --focus next || yabai -m window --focus first
