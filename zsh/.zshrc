@@ -101,7 +101,6 @@ alias python="python3.12"
 alias -s py=python3.12
 alias tf='terraform'
 alias pm='python3.12 manage.py'
-alias dotnet-dev='dotnet run --project Affinity.CityVet.API --urls "http://localhost:5005"'
 # load nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
