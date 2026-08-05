@@ -362,6 +362,8 @@
   ;; Add javascript-eslint to web-mode
   (flycheck-add-mode 'javascript-eslint 'web-mode))
 
+(use-package crux
+	:ensure t)
 
 ;; speeds up initial flycheck
 ;; (with-eval-after-load 'flycheck
