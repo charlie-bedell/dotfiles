@@ -1,2 +1,5 @@
 /.specialrc
 /.zshenv
+emacs/.custom.el
+.~/
+zsh/.zshenv
