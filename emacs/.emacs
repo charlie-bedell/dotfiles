@@ -423,39 +423,96 @@
 
 (use-package eglot
   :ensure nil
+
   :custom
-  (eglot-events-buffer-size 0) ; if debugging, set to 2000000
-	(eglot-ignored-server-capabilities
-	 '(:inlayHintProvider))
+	;; Set to size to 2000000 for debugging
+  ;; Set to 0 again after debugging.
+  (eglot-events-buffer-config
+   '(:size 0 :format full))
+
+  (eglot-ignored-server-capabilities
+   '(:inlayHintProvider))
+
   :config
   (add-to-list
    'eglot-server-programs
-   '((rust-ts-mode rust-mode) .
-     ("rust-analyzer" :initializationOptions (:check (:command "clippy")))))
-  
+   '((rust-ts-mode rust-mode)
+     . ("rust-analyzer"
+        :initializationOptions
+        (:check (:command "clippy")))))
+
   (add-to-list
    'eglot-server-programs
-   '((rjsx-mode js-mode js2-mode js-ts-mode tsx-ts-mode typescript-ts-mode typescript-mode web-mode)
-     "typescript-language-server" "--stdio"))
-  
+   '((rjsx-mode
+      js-mode
+      js2-mode
+      js-ts-mode
+      tsx-ts-mode
+      typescript-ts-mode
+      typescript-mode
+      web-mode)
+     "typescript-language-server"
+     "--stdio"))
+
   (add-to-list
    'eglot-server-programs
-   '((c-mode c-ts-mode c++-mode c++-ts-mode) "clangd"))
-  
-  (add-to-list
-   'eglot-server-programs
-   '((csharp-mode csharp-ts-mode) . ("csharp-ls")))
-  
+   '((c-mode c-ts-mode c++-mode c++-ts-mode)
+     "clangd"))
+
   :custom-face
-  (eglot-highlight-symbol-face ((t (:background "gray40")))))
+  (eglot-highlight-symbol-face
+   ((t (:background "gray40")))))
+
+(use-package eglot-csharp
+  :ensure nil
+  :vc (:url "https://github.com/razzmatazz/eglot-csharp"
+       :rev :newest)
+  :after eglot
+
+  :custom
+  (eglot-csharp-use-metadata-uris t)
+
+  :hook
+  ((csharp-mode
+    csharp-ts-mode
+    eglot-csharp-cshtml-mode)
+   . eglot-csharp-mode)
+
+  :config
+  ;; eglot-csharp currently emits :false, but Eglot expects
+  ;; :json-false for JSON boolean false.
+  (defun my/eglot-csharp-fix-json-false (value)
+    "Replace eglot-csharp's invalid `:false' values with `:json-false'."
+    (cond
+     ((eq value :false)
+      :json-false)
+
+     ((consp value)
+      (cons (my/eglot-csharp-fix-json-false (car value))
+            (my/eglot-csharp-fix-json-false (cdr value))))
+
+     ((vectorp value)
+      (apply #'vector
+             (mapcar #'my/eglot-csharp-fix-json-false value)))
+
+     (t value)))
+
+  (advice-add
+   'eglot-csharp--workspace-configuration
+   :filter-return
+   #'my/eglot-csharp-fix-json-false))
+
 
 (use-package treemacs
   :defer t
+	:ensure t
   :init
   (add-to-list 'image-types 'svg)
-  (setq treemacs--icon-size 12)
-  (setq treemacs-indentation 1)
-  (setq treemacs-indentation-string (propertize " ┃" 'face 'font-lock-comment-face))
+	:custom
+  (treemacs-indentation 1)
+  (treemacs-indentation-string (propertize " ┃" 'face 'font-lock-comment-face))
+	:config
+	(treemacs-resize-icons 16)
 	:custom-face
 	(treemacs-root-face ((t (:inherit font-lock-constant-face :foreground "burlywood1" :underline t :height 1.2))))
 	)
