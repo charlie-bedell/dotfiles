@@ -35,6 +35,7 @@
 ;; (ad-activate 'message)
 
 (require 'package)
+(setq package-install-upgrade-built-in t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
@@ -142,7 +143,11 @@
 (use-package indicators
   :ensure t)
 
+(use-package swiper
+	:ensure t)
+
 (use-package python
+	:ensure nil
   :hook ((python-mode . my-python-mode-setup))
   :config
   (setq python-indent-offset 4)
@@ -158,6 +163,7 @@
 (add-hook 'python-mode-hook #'my-python-recompile-key)
 
 (use-package helm
+	:ensure t
   :custom
   (helm-autoresize-mode 1)
   (helm-autoresize-max-height 0)
@@ -181,8 +187,8 @@
   (helm-selection ((t (:background "gray27" :distant-foreground "white")))))
 
 (use-package ivy
+	:ensure t
   :commands (ivy-mode)
-  :ensure t
   :init
   (ivy-mode 1)
   :custom
@@ -191,7 +197,7 @@
 
 (use-package org
   :defer t
-  :ensure nil
+	:ensure nil
 	:custom
 	(org-directory "~/RoamNotes")
 	(org-agenda-files '("~/RoamNotes/todo.org"))
@@ -294,6 +300,7 @@
   ("C-c n d" . org-roam-dailies-map))
 
 (use-package term
+	:ensure nil
   :commands (term-set-escape-char term-mode term-char-mode pb-copy)
   :config
   (term-set-escape-char 24) ;; set escape char from C-c to C-x
@@ -302,6 +309,9 @@
   (term-color-blue ((t (:foreground "cyan2" :background "cyan2"))))
   (term-color-cyan ((t (:foreground "DeepSkyblue1" :background "DeepSkyblue1"))))
   )
+
+(use-package magit
+	:ensure t)
 
 (use-package flycheck
   :ensure t
@@ -362,6 +372,7 @@
 
 
 (use-package eldoc
+	:ensure nil
   :preface
   (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly)
   :config
@@ -371,6 +382,7 @@
   )
 
 (use-package yasnippet
+	:ensure t
   ;; use [TAB] or C-i to expand snippets
   :commands (yas-reload-all)
   :config
@@ -381,12 +393,14 @@
   (prog-mode . yas-minor-mode))
 
 (use-package ace-window
+	:ensure t
   :custom
   (aw-ignore-on nil)
   :bind
   ("C-x o" . ace-window))
 
 (use-package markdown-mode
+	:ensure t
   :hook
   (markdown-mode . auto-fill-mode))
 
@@ -456,6 +470,7 @@
 ;;   (exec-path-from-shell-initialize))
 
 (use-package treesit
+	:ensure nil
   ;; use m-x treesit-install-language-grammar
   :config
   (setq treesit-language-source-alist
@@ -484,13 +499,15 @@
   )
 
 (use-package company
+	:ensure t
   :hook
   (prog-mode . company-mode)
   :custom
   (company-idle-delay 0)
   (company-minimum-prefix-length 1))
 
-(use-package slime)
+(use-package slime
+	:ensure t)
 
 (require 'term)
 (define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
@@ -533,16 +550,19 @@
 
 
 (use-package xml-mode
+	:ensure nil
   :mode ("\\.csproj\\'")
   )
 
 (use-package rust-mode
+	:ensure t
   :mode ("\\.rs\\'")
   :bind
   (:map rust-mode-map
 	("C-x C-e" . recompile)))
 
 (use-package web-mode
+	:ensure t
   :mode
   (("\\.html\\'" . web-mode)
    ("\\.php\\'" . web-mode))
@@ -553,10 +573,8 @@
   )
 
 (use-package json-mode
+	:ensure t
   :mode "\\.json\\'")
-
-(use-package glsl-mode
-  :mode ("\\.vs\\'" "\\.fs\\'"))
 
 ;; backups
 (setq backup-directory-alist '(("." . "./.~")))
