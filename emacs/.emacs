@@ -161,7 +161,7 @@
 	:bind
 	("C-j" . avy-goto-char)
 	:config
-	(avy-keys '(?q ?w ?e ?r ?a ?s ?d ?f ?c))
+	(setq avy-keys '(?q ?w ?e ?r ?a ?s ?d ?f ?c))
 	)
 
 (use-package python
