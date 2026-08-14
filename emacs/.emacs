@@ -10,9 +10,10 @@
 (load custom-file 'noerror 'nomessage)
 
 ;; for debugging
+;; (setq use-package-compute-statistics t)
 ;; (setq backtrace-on-redisplay-error t)
-;; beginning of custom init
-;; help debug on error
+;; ;; beginning of custom init
+;; ;; help debug on error
 ;; (when init-file-debug
 ;;   (setq use-package-verbose t
 ;;         use-package-expand-minimally nil
@@ -20,8 +21,8 @@
 ;;         debug-on-error t))
 ;; (setq debug-on-error t)
 ;; (setq toggle-debug-on-quit t)
-;; logging
-;; check logs after crash
+;; ;; logging
+;; ;; check logs after crash
 ;; (defun save-messages-to-file ()
 ;;   "Save the contents of the Messages buffer to a file."
 ;;   (with-current-buffer "*Messages*"
@@ -37,7 +38,6 @@
 (require 'package)
 (setq package-install-upgrade-built-in t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
 
 (defun efs/display-startup-time ()
 	"Display startup time and garbage collections."
@@ -95,7 +95,7 @@
   :config
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
-	(menu-bar-mode 1)
+	(menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   (winner-mode 1)
@@ -105,6 +105,13 @@
   (blink-cursor-mode -1)
   (fringe-mode 8)
 	(column-number-mode 1)
+	(prefer-coding-system 'utf-8)
+	(let ((home (file-name-as-directory (expand-file-name "~"))))
+  (setq default-directory home)
+  (setq-default default-directory home))
+  (when (eq system-type 'windows-nt)
+		(add-to-list 'default-frame-alist
+								 '(font . "JetBrains Mono SemiBold-10.5")))
 
 	:custom
 	(custom-safe-themes
@@ -125,7 +132,9 @@
    ("C-c C-p" . backward-list)
    ("C-c C-n" . forward-list)
    ("M-m" . xref-find-apropos)
-   ("C-\\" . treemacs))
+   ("C-\\" . treemacs)
+	 ("C-z" . nil)
+	 ("C-x C-z" . nil))
 
   :hook
   ((prog-mode . display-line-numbers-mode)
@@ -144,7 +153,8 @@
   :ensure t)
 
 (use-package swiper
-	:ensure t)
+	:ensure t
+	)
 
 (use-package python
 	:ensure nil
@@ -164,8 +174,11 @@
 
 (use-package helm
 	:ensure t
-  :custom
-  (helm-autoresize-mode 1)
+	:defer t
+	:config
+	(helm-mode 1)
+	(helm-autoresize-mode 1)
+	:custom
   (helm-autoresize-max-height 0)
   (helm-autoresize-min-height 28)
   (helm-full-frame nil)
@@ -173,9 +186,8 @@
   (helm-split-window-inside-p t)
   (helm-buffers-truncate-lines nil)
   (helm-mini-default-sources '(helm-source-buffers-list helm-source-recentf))
-  (helm-boring-file-regexp-list '("\\~$" "[#]*[#]" "\\#*\\#"))
+  (helm-boring-file-regexp-list '("\\~$" "[#]*[#]" "\\#*\\#" ".uid$"))
   (helm-ff-skip-boring-files t)
-  (helm-mode 1)
 	(helm-buffer-max-length 40)
   :bind
   ("C-x C-f" . helm-find-files)
@@ -188,12 +200,12 @@
 
 (use-package ivy
 	:ensure t
+	:defer t
   :commands (ivy-mode)
-  :init
-  (ivy-mode 1)
   :custom
   (ivy-height 15)
   (ivy-count-format "(%d/%d)"))
+
 
 (use-package org
   :defer t
@@ -310,11 +322,17 @@
   (term-color-cyan ((t (:foreground "DeepSkyblue1" :background "DeepSkyblue1"))))
   )
 
+;; (require 'term)
+;; (define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
+;; (define-key term-raw-map (kbd "s-v") 'term-paste) ;; in use-package?
+
 (use-package magit
-	:ensure t)
+	:ensure t
+	:commands (magit-status magit-dispatch))
 
 (use-package flycheck
   :ensure t
+	:commands flycheck-mode
   :preface
   (defun mp-flycheck-eldoc (callback &rest _ignored)
     "Print flycheck messages at point by calling CALLBACK."
@@ -347,11 +365,14 @@
       (setq-local flycheck-clang-include-path
                   (list (project-root proj)))))
 
-  :init
-  (global-flycheck-mode)
+	(defun my-enable-flycheck ()
+		(when buffer-file-name
+			(flycheck-mode 1)))
 
-  :hook ((flycheck-mode . mp-flycheck-prefer-eldoc)
-         (flycheck-mode . mp-flycheck-set-clang-include-path))
+	:hook
+	((prog-mode . my-enable-flycheck)
+	 (flycheck-mode . mp-flycheck-prefer-eldoc)
+	 (flycheck-mode . mp-flycheck-set-clang-include-path))
 
 	:custom
 	(flycheck-checker-error-threshold 400)
@@ -363,7 +384,8 @@
   (flycheck-add-mode 'javascript-eslint 'web-mode))
 
 (use-package crux
-	:ensure t)
+	:ensure t
+	:commands (crux-move-beginning-of-line))
 
 ;; speeds up initial flycheck
 ;; (with-eval-after-load 'flycheck
@@ -375,12 +397,14 @@
 
 (use-package eldoc
 	:ensure nil
-  :preface
-  (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly)
+  :custom
+  (eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly)
+	(eldoc-idle-delay 0.2)
+	(eldoc-echo-area-use-multiline-p t)
+	(eldoc--echo-area-prefer-doc-buffer nil)
   :config
   ;; (eldoc-add-command-completions "paredit-")
   ;; (eldoc-add-command-completions "combobulate-")
-  (setq eldoc-idle-delay 0.2)
   )
 
 (use-package yasnippet
@@ -412,6 +436,7 @@
   (focus-unfocused ((t (:foreground "gray35")))))
 
 (use-package multiple-cursors
+	:ensure t
   :bind
   ("M-n" . mc/mark-next-lines)
   ("M-p" . mc/mark-previous-lines))
@@ -421,17 +446,60 @@
   :hook
   (prog-mode . electric-pair-local-mode))
 
+(defun my/windows-normalize-file-uri (uri)
+  "Use an uppercase, unescaped drive letter in Windows file URIs."
+  (if (and (eq system-type 'windows-nt)
+           (stringp uri)
+           (string-match
+            "\\`file:///\\([A-Za-z]\\)\\(?:%3[Aa]\\|:\\)"
+            uri))
+      (concat
+       "file:///"
+       (upcase (match-string 1 uri))
+       ":"
+       (substring uri (match-end 0)))
+    uri))
+
+(defun my/windows-normalize-csharp-uri (uri)
+  "Use an uppercase, unescaped drive letter in csharp:/ URIs."
+  (if (and (eq system-type 'windows-nt)
+           (stringp uri)
+           (string-match
+            "\\`csharp:/\\([A-Za-z]\\)\\(?:%3[Aa]\\|:\\)"
+            uri))
+      (concat
+       "csharp:/"
+       (upcase (match-string 1 uri))
+       ":"
+       (substring uri (match-end 0)))
+    uri))
+
+(defun my/eglot-csharp-normalize-metadata-uri
+    (original-handler operation &rest args)
+  "Normalize the metadata URI before invoking ORIGINAL-HANDLER."
+  (when (and (eq system-type 'windows-nt)
+             (stringp (car args)))
+    (setcar args
+            (my/windows-normalize-csharp-uri
+             (car args))))
+
+  (apply original-handler operation args))
+
 (use-package eglot
   :ensure nil
+	:defer t
 
+	;; change size to 2000000 when debugging
+	;; back to 0 when done
   :custom
-	;; Set to size to 2000000 for debugging
-  ;; Set to 0 again after debugging.
   (eglot-events-buffer-config
    '(:size 0 :format full))
 
   (eglot-ignored-server-capabilities
-   '(:inlayHintProvider))
+   '(
+		 :inlayHintProvider
+		 :documentOnTypeFormattingProvider
+		 ))
 
   :config
   (add-to-list
@@ -451,23 +519,37 @@
       typescript-ts-mode
       typescript-mode
       web-mode)
-     "typescript-language-server"
-     "--stdio"))
+     . ("typescript-language-server" "--stdio")))
 
   (add-to-list
    'eglot-server-programs
    '((c-mode c-ts-mode c++-mode c++-ts-mode)
-     "clangd"))
+     . ("clangd")))
+
+  ;; Important: advise `eglot-path-to-uri', not the obsolete
+  ;; `eglot--path-to-uri' alias.
+  (when (eq system-type 'windows-nt)
+    (advice-remove
+     'eglot-path-to-uri
+     #'my/windows-normalize-file-uri)
+
+    (advice-add
+     'eglot-path-to-uri
+     :filter-return
+     #'my/windows-normalize-file-uri))
 
   :custom-face
   (eglot-highlight-symbol-face
    ((t (:background "gray40")))))
 
 (use-package eglot-csharp
-  :ensure nil
   :vc (:url "https://github.com/razzmatazz/eglot-csharp"
-       :rev :newest)
-  :after eglot
+						:rev :newest)
+	:bind
+	(:map csharp-mode-map
+				("C-c C-p" . backward-list)
+				("C-c C-n" . forward-list)
+				)
 
   :custom
   (eglot-csharp-use-metadata-uris t)
@@ -479,33 +561,57 @@
    . eglot-csharp-mode)
 
   :config
-  ;; eglot-csharp currently emits :false, but Eglot expects
-  ;; :json-false for JSON boolean false.
+  (when (eq system-type 'windows-nt)
+    (advice-remove
+     'eglot-csharp--metadata-uri-handler
+     #'my/eglot-csharp-normalize-metadata-uri)
+
+    (advice-add
+     'eglot-csharp--metadata-uri-handler
+     :around
+     #'my/eglot-csharp-normalize-metadata-uri))
+
   (defun my/eglot-csharp-fix-json-false (value)
-    "Replace eglot-csharp's invalid `:false' values with `:json-false'."
+    "Recursively replace `:false' with `:json-false'."
     (cond
      ((eq value :false)
       :json-false)
 
      ((consp value)
-      (cons (my/eglot-csharp-fix-json-false (car value))
-            (my/eglot-csharp-fix-json-false (cdr value))))
+      (cons
+       (my/eglot-csharp-fix-json-false (car value))
+       (my/eglot-csharp-fix-json-false (cdr value))))
 
      ((vectorp value)
-      (apply #'vector
-             (mapcar #'my/eglot-csharp-fix-json-false value)))
+      (apply
+       #'vector
+       (mapcar
+        #'my/eglot-csharp-fix-json-false
+        value)))
 
      (t value)))
 
-  (advice-add
-   'eglot-csharp--workspace-configuration
-   :filter-return
-   #'my/eglot-csharp-fix-json-false))
+  (unless
+      (advice-member-p
+       #'my/eglot-csharp-fix-json-false
+       'eglot-csharp--workspace-configuration)
+
+    (advice-add
+     'eglot-csharp--workspace-configuration
+     :filter-return
+     #'my/eglot-csharp-fix-json-false)))
+
+(use-package gdscript-mode
+	:ensure nil
+	:config
+	(defvar font-lock-function-call-face 'font-lock-function-call-face)
+	:hook (gdscript-mode . eglot-ensure))
+
 
 
 (use-package treemacs
-  :defer t
-	:ensure t
+   :defer t
+   :ensure t
   :init
   (add-to-list 'image-types 'svg)
 	:custom
@@ -516,11 +622,6 @@
 	:custom-face
 	(treemacs-root-face ((t (:inherit font-lock-constant-face :foreground "burlywood1" :underline t :height 1.2))))
 	)
-
-(use-package devdocs
-  :defer t
-  :bind
-  ("C-c C-d C-c" . devdocs-lookup))
 
 ;; keybindings
 (global-set-key (kbd "C-c p") 'pyorg)
@@ -566,11 +667,10 @@
   (company-minimum-prefix-length 1))
 
 (use-package slime
-	:ensure t)
+	:ensure t
+	:commands slime)
 
-(require 'term)
-(define-key term-raw-map (kbd "C-y") 'term-paste) ;; cant put these
-(define-key term-raw-map (kbd "s-v") 'term-paste) ;; in use-package?
+
 
 (use-package js-ts-mode
   :ensure nil
@@ -602,10 +702,7 @@
 
 
 ;; tramp
-(use-package tramp
-	:ensure nil)
-
-(customize-set-variable 'tramp-default-user "cbedell")
+(setq tramp-default-user "cbedell")
 
 
 (use-package xml-mode
