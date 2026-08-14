@@ -160,7 +160,7 @@
 	:ensure t
 	:bind
 	("C-j" . avy-goto-char)
-	:custom
+	:config
 	(avy-keys '(?q ?w ?e ?r ?a ?s ?d ?f ?c))
 	)
 
