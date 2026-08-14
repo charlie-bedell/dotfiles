@@ -123,7 +123,7 @@
    ("C-s" . swiper)
    ("C-;" . comment-or-uncomment-region)
    ("C-a" . crux-move-beginning-of-line)
-   ("C-j" . avy-goto-char)
+   
    ("C-v" . (lambda () (interactive) (scroll-up-by 5)))
    ("M-v" . (lambda () (interactive) (scroll-down-by 5)))
    ("M-," . xref-go-back)
@@ -154,6 +154,14 @@
 
 (use-package swiper
 	:ensure t
+	)
+
+(use-package avy
+	:ensure t
+	:bind
+	("C-j" . avy-goto-char)
+	:custom
+	(avy-keys '(?q ?w ?e ?r ?a ?s ?d ?f ?c))
 	)
 
 (use-package python
@@ -197,6 +205,9 @@
   (helm-ff-directory ((t (:extend t :foreground "DeepSkyBlue1" :background unspecified))))
   (helm-ff-file ((t (:foreground "lightgrey"))))
   (helm-selection ((t (:background "gray27" :distant-foreground "white")))))
+
+(use-package multiple-cursors
+	:ensure t)
 
 (use-package ivy
 	:ensure t
