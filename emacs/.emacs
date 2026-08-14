@@ -74,6 +74,20 @@
   (forward-line (- arg))
   (scroll-down arg))
 
+(defun my/delete-word (arg)
+	"Delete forward ARG words without adding them to the kill ring."
+	(interactive "p")
+	(delete-region
+	 (point)
+	 (progn
+		 (forward-word arg)
+		 (point))))
+
+(defun my/backward-delete-word (arg)
+	"Delete backward ARG words without adding them to the kill ring."
+	(interactive "p")
+	(my/delete-word (- arg)))
+
 ;; M-x describe-personal-keybindings to see all your keybinds
 (use-package emacs
   :ensure nil
@@ -123,7 +137,8 @@
    ("C-s" . swiper)
    ("C-;" . comment-or-uncomment-region)
    ("C-a" . crux-move-beginning-of-line)
-   
+   ("M-d" . my/delete-word)
+	 ("M-DEL" . my/backward-delete-word)
    ("C-v" . (lambda () (interactive) (scroll-up-by 5)))
    ("M-v" . (lambda () (interactive) (scroll-down-by 5)))
    ("M-," . xref-go-back)
@@ -158,11 +173,10 @@
 
 (use-package avy
 	:ensure t
-	:bind
-	("C-j" . avy-goto-char)
-	:config
+	:init
 	(setq avy-keys '(?q ?w ?e ?r ?a ?s ?d ?f ?c))
-	)
+	:bind*
+	("C-j" . avy-goto-char))
 
 (use-package python
 	:ensure nil
