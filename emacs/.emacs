@@ -632,8 +632,6 @@
 	(defvar font-lock-function-call-face 'font-lock-function-call-face)
 	:hook (gdscript-mode . eglot-ensure))
 
-
-
 (use-package treemacs
    :defer t
    :ensure t
@@ -691,11 +689,28 @@
   (company-idle-delay 0)
   (company-minimum-prefix-length 1))
 
+(use-package gdshader-mode
+  :ensure nil
+  :mode "\\.gdshader\\'"
+
+  :init
+  (defun my-gdshader-company-setup ()
+    (setq-local company-dabbrev-downcase nil)
+    (setq-local company-backends
+                '((company-keywords company-dabbrev))))
+
+  :hook
+  (gdshader-mode . my-gdshader-company-setup)
+
+  :config
+  (add-to-list
+   'company-keywords-alist
+   (append '(gdshader-mode)
+           gdshader-all-keywords)))
+
 (use-package slime
 	:ensure t
 	:commands slime)
-
-
 
 (use-package js-ts-mode
   :ensure nil
